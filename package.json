@@ -1,0 +1,20 @@
+{
+  "name": "belrose-wally-shop",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Boutique e-commerce BELROSE WALLY (Libreville, Gabon) — SPA + API Serverless Vercel + Supabase.",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel --prod",
+    "hash-password": "node scripts/hash-password.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.4",
+    "bcryptjs": "^2.4.3",
+    "cookie": "^0.6.0",
+    "jsonwebtoken": "^9.0.2"
+  }
+}
