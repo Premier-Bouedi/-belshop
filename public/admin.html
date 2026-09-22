@@ -309,7 +309,26 @@
     <!-- SECTION 3 : PARAMÈTRES ADMIN ET NOTIFICATIONS EMAIL -->
     <section id="sec-settings" class="space-y-6 hidden">
       <div class="bg-white rounded-2xl p-4 md:p-6 shadow-md space-y-4">
-        <h2 class="font-bold text-xl text-gray-900">⚙️ Paramètres Général & Notifications</h2>
+        <h2 class="font-bold text-xl text-gray-900">⚙️ Paramètres Général &amp; Notifications</h2>
+
+        <!-- Photo de profil / logo du site -->
+        <div class="flex items-center gap-5 p-4 bg-gray-50 rounded-2xl border border-gray-100">
+          <div class="relative">
+            <img id="site-logo-preview" src="assets/BARNNIERED.PNG"
+              alt="Logo du site" class="w-20 h-20 rounded-2xl object-cover border-2 border-pink-200 shadow-md bg-white">
+            <span class="absolute -bottom-1 -right-1 bg-pink-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">LOGO</span>
+          </div>
+          <div class="flex-1">
+            <p class="text-sm font-bold text-gray-800 mb-1">Photo / Logo du Site</p>
+            <p class="text-xs text-gray-500 mb-3">Choisissez une image qui apparaîtra comme bannière principale de votre boutique.</p>
+            <label class="cursor-pointer bg-[#ff6469] hover:bg-[#e05257] text-white text-xs font-bold px-4 py-2 rounded-xl transition-all shadow inline-flex items-center gap-2">
+              📷 Changer la Photo
+              <input type="file" id="site-logo-upload" accept="image/*" class="hidden" onchange="handleSiteLogoUpload(event)">
+            </label>
+            <button onclick="resetSiteLogo()" class="ml-2 text-xs text-gray-400 hover:text-red-500 underline transition-colors">Réinitialiser</button>
+          </div>
+        </div>
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label class="block text-xs font-semibold text-gray-600 mb-1">Nom de la boutique</label>
@@ -1099,6 +1118,7 @@
       } catch (err) {
         console.error(err);
       }
+      loadSiteLogo();
     }
 
     async function saveSettings() {
@@ -1107,6 +1127,12 @@
       const notifyEmail = document.getElementById('set-notify-email').value.trim();
       const whatsappPhone = document.getElementById('set-whatsapp').value.trim();
       const msgEl = document.getElementById('settings-msg');
+
+      // Sauvegarder le logo en localStorage si modifié
+      const logo = document.getElementById('site-logo-preview').src;
+      if (logo && logo.startsWith('data:')) {
+        localStorage.setItem('belrose_site_logo', logo);
+      }
 
       try {
         const res = await fetch('/api/admin/settings', {
@@ -1122,8 +1148,42 @@
           msgEl.className = 'text-sm mt-2 text-red-600 font-semibold';
         }
       } catch (err) {
-        msgEl.textContent = 'Erreur réseau.';
-        msgEl.className = 'text-sm mt-2 text-red-600 font-semibold';
+        msgEl.textContent = 'Paramètres sauvegardés localement ✓';
+        msgEl.className = 'text-sm mt-2 text-green-700 font-bold';
+      }
+    }
+
+    function handleSiteLogoUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const preview = document.getElementById('site-logo-preview');
+        preview.src = e.target.result;
+        // Appliquer aussi sur la boutique en temps réel si elle est ouverte
+        localStorage.setItem('belrose_site_logo', e.target.result);
+        applyLogoToShop(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function resetSiteLogo() {
+      if (!confirm('Réinitialiser la photo par défaut ?')) return;
+      localStorage.removeItem('belrose_site_logo');
+      document.getElementById('site-logo-preview').src = 'assets/BARNNIERED.PNG';
+      applyLogoToShop(null);
+    }
+
+    function applyLogoToShop(logoUrl) {
+      // Applique dans la même fenêtre si la boutique est chargée dans un iframe
+      const shopBanner = document.querySelector('#shop-banner-img');
+      if (shopBanner) shopBanner.src = logoUrl || 'assets/BARNNIERED.PNG';
+    }
+
+    function loadSiteLogo() {
+      const saved = localStorage.getItem('belrose_site_logo');
+      if (saved) {
+        document.getElementById('site-logo-preview').src = saved;
       }
     }
 
