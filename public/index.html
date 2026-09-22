@@ -2,284 +2,315 @@
 <html lang="fr">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BELROSE WALLY - Boutique en Ligne Libreville</title>
-  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap"
-    rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BELROSE WALLY - Boutique en Ligne Libreville</title>
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
 
-  <style>
-    :root {
-      --primary: #ff6469;
-      --primary-hover: #ff6469;
-      --dark: #1A1A2E;
-      --stone: #4A4A5A;
-      --bg-light: #F7F6F3;
-    }
+    <style>
+        :root {
+            --primary: #ff6469;
+            --primary-hover: #ff6469;
+            --dark: #1A1A2E;
+            --stone: #4A4A5A;
+            --bg-light: #F7F6F3;
+        }
 
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--bg-light);
-    }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg-light);
+        }
 
-    .font-display {
-      font-family: 'Playfair Display', serif;
-    }
+        .font-display {
+            font-family: 'Playfair Display', serif;
+        }
 
-    .category-tab {
-      transition: all 0.3s ease;
-      border: none;
-      background: #fff;
-      color: #000;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
-    }
+        .category-tab {
+            transition: all 0.3s ease;
+            border: none;
+            background: #fff;
+            color: #000;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+        }
 
-    .category-tab.active {
-      background: var(--primary);
-      color: #fff;
-      font-weight: 700;
-      box-shadow: 0 4px 12px rgba(255, 100, 105, 0.3);
-    }
+        .category-tab.active {
+            background: var(--primary);
+            color: #fff;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(255, 100, 105, 0.3);
+        }
 
-    .product-card {
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
-      border: none;
-    }
+        .product-card {
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            border: none;
+        }
 
-    .product-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.1);
-    }
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.1);
+        }
 
-    /* Toast de notification (remplace les alert() bloquantes) */
-    #toast {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%) translateY(20px);
-      background: var(--dark);
-      color: #fff;
-      padding: 12px 20px;
-      border-radius: 999px;
-      font-size: 14px;
-      font-weight: 600;
-      opacity: 0;
-      pointer-events: none;
-      transition: all 0.3s ease;
-      z-index: 100;
-      max-width: 90vw;
-      text-align: center;
-    }
+        /* Toast de notification (remplace les alert() bloquantes) */
+        #toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--dark);
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 999px;
+            font-size: 14px;
+            font-weight: 600;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            z-index: 100;
+            max-width: 90vw;
+            text-align: center;
+        }
 
-    #toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
+        #toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
 
-    #toast.error {
-      background: #b91c1c;
-    }
+        #toast.error {
+            background: #b91c1c;
+        }
 
-    @media (min-width: 1024px) {
-      body {
-        display: grid;
-        grid-template-columns: 1fr 360px;
-        grid-template-rows: auto 1fr;
-        min-height: 100vh;
-      }
+        @media (min-width: 1024px) {
+            body {
+                display: grid;
+                grid-template-columns: 1fr 360px;
+                grid-template-rows: auto 1fr;
+                min-height: 100vh;
+            }
 
-      header {
-        grid-column: 1 / -1;
-      }
+            header {
+                grid-column: 1 / -1;
+            }
 
-      .main-wrapper {
-        grid-column: 1;
-        grid-row: 2;
-      }
+            .main-wrapper {
+                grid-column: 1;
+                grid-row: 2;
+            }
 
-      #order-panel-wrapper {
-        grid-column: 2;
-        grid-row: 2;
-      }
+            #order-panel-wrapper {
+                grid-column: 2;
+                grid-row: 2;
+            }
 
-      #order-panel-fixed {
-        position: sticky;
-        top: 20px;
-        height: calc(100vh - 40px);
-      }
-    }
-  </style>
+            #order-panel-fixed {
+                position: sticky;
+                top: 20px;
+                height: calc(100vh - 40px);
+            }
+        }
+    </style>
 </head>
 
 <body class="min-h-screen">
 
-  <!-- EN-TÊTE / BANNIÈRE HERO -->
-  <header
-    class="w-full relative overflow-hidden bg-black text-white py-12 px-4 text-center flex flex-col items-center justify-center min-h-[50vh]">
-    <img src="assets/BARNNIERED.PNG" alt="BELROSE WALLY BANNER"
-      class="absolute inset-0 w-full h-full object-cover opacity-60" onerror="this.src='assets/Parfume (3).png'">
-    <div class="relative z-10 max-w-4xl mx-auto">
-      <h1 class="font-display text-5xl md:text-7xl font-extrabold tracking-wide drop-shadow-md text-pink-400">
-        BELROSE WALLY
-      </h1>
-      <p class="text-xl md:text-2xl mt-2 tracking-widest font-bold uppercase text-white">SHOP.</p>
-      <button onclick="scrollToCatalog()"
-        class="mt-6 bg-[#ff6469] hover:bg-[#e05257] text-white font-bold rounded-full px-8 py-3 text-lg transition-transform transform hover:scale-105 shadow-lg">
-        Order Now
-      </button>
-    </div>
-  </header>
-
-  <!-- CONTENU PRINCIPAL & CATALOGUE -->
-  <div class="main-wrapper p-4 md:p-8">
-    <nav class="flex gap-3 mb-8 overflow-x-auto pb-2" id="category-tabs">
-      <button class="category-tab active px-6 py-2.5 rounded-full text-sm font-semibold" data-cat="caps"
-        onclick="switchCategory('caps', event)">Casquettes</button>
-      <button class="category-tab px-6 py-2.5 rounded-full text-sm font-semibold" data-cat="sacs"
-        onclick="switchCategory('sacs', event)">Sacs & Maroquinerie</button>
-      <button class="category-tab px-6 py-2.5 rounded-full text-sm font-semibold" data-cat="parfums"
-        onclick="switchCategory('parfums', event)">Parfums</button>
-    </nav>
-
-    <section id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></section>
-  </div>
-
-  <!-- PANNEAU PANIER LATÉRAL -->
-  <div id="order-panel-wrapper" class="p-4 md:p-6">
-    <aside id="order-panel-fixed" class="bg-white rounded-2xl overflow-hidden flex flex-col shadow-xl">
-      <div class="bg-[#ff6469] p-4 flex justify-between items-center">
-        <h2 class="font-display font-bold text-2xl text-white">Your Order</h2>
-        <span id="cart-count" class="bg-black text-white font-bold text-xs px-3 py-1 rounded-full">0</span>
-      </div>
-
-      <div id="cart-items" class="flex-1 overflow-y-auto p-4 space-y-4">
-        <p id="empty-cart-msg" class="text-center text-gray-400 text-sm italic py-8">Votre panier est vide</p>
-      </div>
-
-      <div class="p-4 bg-gray-50 space-y-3">
-        <div class="flex justify-between items-center font-bold text-lg">
-          <span>Total (Paiement à la livraison) :</span>
-          <span id="cart-total">0 FCFA</span>
+    <!-- EN-TÊTE / BANNIÈRE HERO -->
+    <header
+        class="w-full relative overflow-hidden bg-black text-white py-12 px-4 text-center flex flex-col items-center justify-center min-h-[50vh]">
+        <img src="assets/BARNNIERED.PNG" alt="BELROSE WALLY BANNER"
+            class="absolute inset-0 w-full h-full object-cover opacity-60" onerror="this.src='assets/affiche.png'">
+        <div class="relative z-10 max-w-4xl mx-auto">
+            <h1 class="font-display text-5xl md:text-7xl font-extrabold tracking-wide drop-shadow-md text-pink-400">
+                BELROSE WALLY
+            </h1>
+            <p class="text-xl md:text-2xl mt-2 tracking-widest font-bold uppercase text-white">SHOP.</p>
+            <button onclick="scrollToCatalog()"
+                class="mt-6 bg-[#ff6469] hover:bg-[#e05257] text-white font-bold rounded-full px-8 py-3 text-lg transition-transform transform hover:scale-105 shadow-lg">
+                Order Now
+            </button>
         </div>
+    </header>
 
-        <input type="text" id="client-name" placeholder="Nom complet"
-          class="w-full px-3.5 py-2.5 bg-white rounded-xl text-sm shadow-sm outline-none focus:ring-2 focus:ring-pink-400">
-        <input type="tel" id="client-phone" placeholder="Numéro Téléphone / WhatsApp"
-          class="w-full px-3.5 py-2.5 bg-white rounded-xl text-sm shadow-sm outline-none focus:ring-2 focus:ring-pink-400">
-        <input type="text" id="client-address" placeholder="Quartier de livraison (Libreville)"
-          class="w-full px-3.5 py-2.5 bg-white rounded-xl text-sm shadow-sm outline-none focus:ring-2 focus:ring-pink-400">
+    <!-- CONTENU PRINCIPAL & CATALOGUE -->
+    <div class="main-wrapper p-4 md:p-8">
+        <nav class="flex gap-3 mb-8 overflow-x-auto pb-2" id="category-tabs">
+            <button class="category-tab active px-6 py-2.5 rounded-full text-sm font-semibold" data-cat="caps"
+                onclick="switchCategory('caps', event)">Casquettes</button>
+            <button class="category-tab px-6 py-2.5 rounded-full text-sm font-semibold" data-cat="sacs"
+                onclick="switchCategory('sacs', event)">Sacs & Maroquinerie</button>
+            <button class="category-tab px-6 py-2.5 rounded-full text-sm font-semibold" data-cat="parfums"
+                onclick="switchCategory('parfums', event)">Parfums</button>
+        </nav>
 
-        <button id="submit-order-btn" onclick="submitOrder()"
-          class="w-full bg-[#ff6469] hover:bg-[#e05257] text-white font-bold py-3 rounded-full text-base transition-colors shadow-md">
-          Valider la Commande
-        </button>
-      </div>
-    </aside>
-  </div>
+        <section id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></section>
+    </div>
 
-  <div id="toast"></div>
+    <!-- PANNEAU PANIER LATÉRAL -->
+    <div id="order-panel-wrapper" class="p-4 md:p-6">
+        <aside id="order-panel-fixed" class="bg-white rounded-2xl overflow-hidden flex flex-col shadow-xl">
+            <div class="bg-[#ff6469] p-4 flex justify-between items-center">
+                <h2 class="font-display font-bold text-2xl text-white">Your Order</h2>
+                <span id="cart-count" class="bg-black text-white font-bold text-xs px-3 py-1 rounded-full">0</span>
+            </div>
 
-  <script>
-    // -------------------------------------------------------------------------
-    // Catalogue produit (à terme, ces données peuvent venir d'une table Supabase
-    // "products" servie par une route /api/products — ici en dur pour la démo).
-    // Aucune donnée sensible n'est manipulée dans ce fichier.
-    // -------------------------------------------------------------------------
-    const products = {
-      caps: [
-        { id: 'c1', name: 'CASQUETTE NOIR', desc: 'Casquette élégante brodée avec filet de ventilation', price: 15000, img: 'assets/casqUETTE1.webp' },
-        { id: 'c2', name: 'CASQUETTE HERMÈS STYLE', desc: 'Finition haute qualité édition spéciale', price: 18000, img: 'assets/CASQUETTE 2.webp' },
-        { id: 'c3', name: 'CASQUETTE LUXE', desc: 'Tissu respirant et ajustement parfait', price: 15000, img: 'assets/CASQUETTE 3.webp' },
-        { id: 'c4', name: 'CASQUETTE PRESTIGE', desc: 'Édition limitée confort optimal', price: 15000, img: 'assets/CASQUETTE 4.webp' }
-      ],
-      sacs: [
-        { id: 's1', name: 'Sac Classic', desc: 'Sac à bandoulière en cuir avec finition dorée', price: 45000, img: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600&auto=format&fit=crop' },
-        { id: 's2', name: 'Sac Seared Saffron', desc: 'Modèle compact haut de gamme pour soirées', price: 40000, img: 'https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=600&auto=format&fit=crop' },
-        { id: 's3', name: 'Green Garden Bag', desc: 'Collection prestige édition limitée', price: 50000, img: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&auto=format&fit=crop' }
-      ],
-      parfums: [
-        { id: 'p1', name: 'Parfum Belrose Eau De Parfum', desc: 'Senteur florale et envoûtante 100ml', price: 35000, img: 'assets/Parfume (3).png' }
-      ]
-    };
+            <div id="cart-items" class="flex-1 overflow-y-auto p-4 space-y-4">
+                <p id="empty-cart-msg" class="text-center text-gray-400 text-sm italic py-8">Votre panier est vide</p>
+            </div>
 
-    let cart = [];
-    let currentCategory = 'caps';
+            <div class="p-4 bg-gray-50 space-y-3">
+                <div class="flex justify-between items-center font-bold text-lg">
+                    <span>Total (Paiement à la livraison) :</span>
+                    <span id="cart-total">0 FCFA</span>
+                </div>
 
-    function renderProducts() {
-      const grid = document.getElementById('product-grid');
-      grid.innerHTML = '';
-      products[currentCategory].forEach(item => {
-        grid.insertAdjacentHTML('beforeend', `
-          <div class="product-card group bg-white rounded-2xl overflow-hidden flex flex-col shadow-md hover:shadow-xl transition-all duration-300">
+                <input type="text" id="client-name" placeholder="Nom complet"
+                    class="w-full px-3.5 py-2.5 bg-white rounded-xl text-sm shadow-sm outline-none focus:ring-2 focus:ring-pink-400">
+                <input type="tel" id="client-phone" placeholder="Numéro Téléphone / WhatsApp"
+                    class="w-full px-3.5 py-2.5 bg-white rounded-xl text-sm shadow-sm outline-none focus:ring-2 focus:ring-pink-400">
+                <input type="text" id="client-address" placeholder="Quartier de livraison (Libreville)"
+                    class="w-full px-3.5 py-2.5 bg-white rounded-xl text-sm shadow-sm outline-none focus:ring-2 focus:ring-pink-400">
+
+                <button id="submit-order-btn" onclick="submitOrder()"
+                    class="w-full bg-[#ff6469] hover:bg-[#e05257] text-white font-bold py-3 rounded-full text-base transition-colors shadow-md">
+                    Valider la Commande
+                </button>
+            </div>
+        </aside>
+    </div>
+
+    <div id="toast"></div>
+
+    <script>
+        // -------------------------------------------------------------------------
+        // Catalogue produit (à terme, ces données peuvent venir d'une table Supabase
+        // "products" servie par une route /api/products — ici en dur pour la démo).
+        // Aucune donnée sensible n'est manipulée dans ce fichier.
+        // -------------------------------------------------------------------------
+        let products = {
+            caps: [
+                { id: 'c1', category: 'caps', name: 'CASQUETTE NOIR', desc: 'Casquette élégante brodée avec filet de ventilation', price: 15000, stock: 12, img: 'assets/casquette (1).png' },
+                { id: 'c2', category: 'caps', name: 'CASQUETTE HERMÈS STYLE', desc: 'Finition haute qualité édition spéciale', price: 18000, stock: 4, img: 'assets/casquette (2).png' },
+                { id: 'c3', category: 'caps', name: 'CASQUETTE LUXE', desc: 'Tissu respirant et ajustement parfait', price: 15000, stock: 2, img: 'assets/casquette (3).png' },
+                { id: 'c4', category: 'caps', name: 'CASQUETTE PRESTIGE', desc: 'Édition limitée confort optimal', price: 15000, stock: 0, img: 'assets/casquette (4).png' }
+            ],
+            sacs: [
+                { id: 's1', category: 'sacs', name: 'Sac Classic', desc: 'Sac à bandoulière en cuir avec finition dorée', price: 45000, stock: 8, img: 'assets/sac 1 (1).png' },
+                { id: 's2', category: 'sacs', name: 'Sac Seared Saffron', desc: 'Modèle compact haut de gamme pour soirées', price: 40000, stock: 5, img: 'assets/sac 1 (2).png' },
+                { id: 's3', category: 'sacs', name: 'Green Garden Bag', desc: 'Collection prestige édition limitée', price: 50000, stock: 1, img: 'assets/sac 1 (3).png' }
+            ],
+            parfums: [
+                { id: 'p1', category: 'parfums', name: 'Parfum Belrose Eau De Parfum', desc: 'Senteur florale et envoûtante 100ml', price: 35000, stock: 15, img: 'assets/parfuns 3.png' },
+                { id: 'p2', category: 'parfums', name: 'Parfum Belrose Collection', desc: 'Senteur raffinée pour les occasions spéciales', price: 40000, stock: 10, img: 'assets/parfuns.png' }
+            ]
+        };
+
+        let cart = [];
+        let currentCategory = 'caps';
+
+        function renderProducts() {
+            const grid = document.getElementById('product-grid');
+            grid.innerHTML = '';
+            
+            if (!products[currentCategory] || products[currentCategory].length === 0) {
+                grid.innerHTML = '<p class="text-gray-500 italic col-span-full text-center">Aucun produit dans cette catégorie.</p>';
+                return;
+            }
+
+            products[currentCategory].forEach(item => {
+                const stock = item.stock !== undefined ? Number(item.stock) : Infinity;
+                const isOutOfStock = stock === 0;
+
+                const badgeHTML = isOutOfStock
+                    ? '<div class="absolute top-4 right-4 bg-red-600 text-white text-[10px] font-extrabold px-3 py-1 rounded-full shadow-lg z-10 uppercase tracking-widest border border-white/20 backdrop-blur-sm">Rupture</div>'
+                    : '';
+                
+                const buttonHTML = isOutOfStock
+                    ? `<button disabled class="bg-gray-200 text-gray-400 font-bold px-4 py-2 rounded-xl text-sm flex items-center gap-1 cursor-not-allowed">
+                         Épuisé
+                       </button>`
+                    : `<button onclick="addToCart('${item.id}')" class="bg-[#ff6469] hover:bg-[#e05257] text-white font-bold px-4 py-2 rounded-xl text-sm flex items-center gap-1 transition-all active:scale-95 shadow-md">
+                         <i data-lucide="plus" class="w-4 h-4"></i> Ajouter
+                       </button>`;
+
+                grid.insertAdjacentHTML('beforeend', `
+          <div class="product-card group bg-white rounded-2xl overflow-hidden flex flex-col shadow-md hover:shadow-xl transition-all duration-300 relative ${isOutOfStock ? 'opacity-70 grayscale-[20%]' : ''}">
+            ${badgeHTML}
             <div class="w-full h-52 sm:h-60 bg-[#FAF9F6] p-4 flex items-center justify-center overflow-hidden relative">
-              <img src="${item.img}" alt="${item.name}" class="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-105 drop-shadow">
+              <img src="${item.img}" alt="${item.name}" class="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-105 drop-shadow ${isOutOfStock ? 'opacity-60' : ''}">
             </div>
             <div class="p-5 flex flex-col flex-1">
               <h3 class="font-bold text-lg text-gray-900">${item.name}</h3>
               <p class="text-sm text-gray-500 mb-4 flex-1">${item.desc}</p>
               <div class="flex justify-between items-center mt-auto pt-2">
-                <span class="font-bold text-lg text-gray-900">${item.price.toLocaleString('fr-FR')} FCFA</span>
-                <button onclick="addToCart('${item.id}')" class="bg-[#ff6469] hover:bg-[#e05257] text-white font-bold px-4 py-2 rounded-xl text-sm flex items-center gap-1 transition-all active:scale-95 shadow-md">
-                  <i data-lucide="plus" class="w-4 h-4"></i> Ajouter
-                </button>
+                <span class="font-bold text-lg text-gray-900">${Number(item.price).toLocaleString('fr-FR')} FCFA</span>
+                ${buttonHTML}
               </div>
             </div>
           </div>
         `);
-      });
-      lucide.createIcons();
-    }
+            });
+            if (window.lucide) lucide.createIcons();
+        }
 
-    function switchCategory(cat, evt) {
-      currentCategory = cat;
-      document.querySelectorAll('.category-tab').forEach(btn => btn.classList.remove('active'));
-      (evt ? evt.currentTarget : document.querySelector(`[data-cat="${cat}"]`)).classList.add('active');
-      renderProducts();
-    }
+        function switchCategory(cat, evt) {
+            currentCategory = cat;
+            document.querySelectorAll('.category-tab').forEach(btn => btn.classList.remove('active'));
+            (evt ? evt.currentTarget : document.querySelector(`[data-cat="${cat}"]`)).classList.add('active');
+            renderProducts();
+        }
 
-    function addToCart(productId) {
-      let product = null;
-      for (const cat in products) {
-        const found = products[cat].find(p => p.id === productId);
-        if (found) { product = found; break; }
-      }
-      if (!product) return;
+        function addToCart(productId) {
+            let product = null;
+            for (const cat in products) {
+                const found = products[cat].find(p => p.id === productId);
+                if (found) { product = found; break; }
+            }
+            if (!product) return;
 
-      const existing = cart.find(item => item.id === productId);
-      if (existing) {
-        existing.qty++;
-      } else {
-        cart.push({ ...product, qty: 1 });
-      }
-      updateCartUI();
-      showToast(`${product.name} ajouté au panier`);
-    }
+            const stock = product.stock !== undefined ? Number(product.stock) : Infinity;
+            if (stock === 0) {
+                showToast('Désolé, ce produit est épuisé.', true);
+                return;
+            }
 
-    function updateCartUI() {
-      const cartContainer = document.getElementById('cart-items');
-      const countEl = document.getElementById('cart-count');
-      const totalEl = document.getElementById('cart-total');
+            const existing = cart.find(item => item.id === productId);
+            if (existing) {
+                if (existing.qty >= stock) {
+                    showToast('Stock maximum atteint pour ce produit.', true);
+                    return;
+                }
+                existing.qty++;
+            } else {
+                cart.push({ ...product, qty: 1 });
+            }
+            updateCartUI();
+            showToast(`${product.name} ajouté au panier`);
+        }
 
-      if (cart.length === 0) {
-        cartContainer.innerHTML = '<p id="empty-cart-msg" class="text-center text-gray-400 text-sm italic py-8">Votre panier est vide</p>';
-        countEl.textContent = '0';
-        totalEl.textContent = '0 FCFA';
-        return;
-      }
+        function updateCartUI() {
+            const cartContainer = document.getElementById('cart-items');
+            const countEl = document.getElementById('cart-count');
+            const totalEl = document.getElementById('cart-total');
 
-      let total = 0;
-      let totalItems = 0;
-      cartContainer.innerHTML = '';
+            if (cart.length === 0) {
+                cartContainer.innerHTML = '<p id="empty-cart-msg" class="text-center text-gray-400 text-sm italic py-8">Votre panier est vide</p>';
+                countEl.textContent = '0';
+                totalEl.textContent = '0 FCFA';
+                return;
+            }
 
-      cart.forEach((item, index) => {
-        const itemTotal = item.price * item.qty;
-        total += itemTotal;
-        totalItems += item.qty;
+            let total = 0;
+            let totalItems = 0;
+            cartContainer.innerHTML = '';
 
-        cartContainer.insertAdjacentHTML('beforeend', `
+            cart.forEach((item, index) => {
+                const itemTotal = item.price * item.qty;
+                total += itemTotal;
+                totalItems += item.qty;
+
+                cartContainer.insertAdjacentHTML('beforeend', `
           <div class="flex items-center justify-between border-b pb-2">
             <div>
               <p class="font-bold text-sm">${item.name}</p>
@@ -293,86 +324,110 @@
             </div>
           </div>
         `);
-      });
+            });
 
-      countEl.textContent = totalItems;
-      totalEl.textContent = `${total.toLocaleString('fr-FR')} FCFA`;
-      lucide.createIcons();
-    }
-
-    function removeFromCart(index) {
-      cart.splice(index, 1);
-      updateCartUI();
-    }
-
-    function showToast(message, isError = false) {
-      const toast = document.getElementById('toast');
-      toast.textContent = message;
-      toast.classList.toggle('error', isError);
-      toast.classList.add('show');
-      clearTimeout(showToast._t);
-      showToast._t = setTimeout(() => toast.classList.remove('show'), 3500);
-    }
-
-    async function submitOrder() {
-      const name = document.getElementById('client-name').value.trim();
-      const phone = document.getElementById('client-phone').value.trim();
-      const address = document.getElementById('client-address').value.trim();
-      const btn = document.getElementById('submit-order-btn');
-
-      if (!name || !phone || !address) {
-        showToast('Veuillez remplir votre nom, téléphone et quartier de livraison.', true);
-        return;
-      }
-      if (cart.length === 0) {
-        showToast('Votre panier est vide.', true);
-        return;
-      }
-
-      const orderPayload = {
-        client: { name, phone, address },
-        items: cart.map(({ id, name, price, qty }) => ({ id, name, price, qty })),
-        total: cart.reduce((sum, item) => sum + (item.price * item.qty), 0),
-        paymentMethod: 'Paiement à la livraison (Libreville)'
-      };
-
-      btn.disabled = true;
-      btn.textContent = 'Envoi en cours...';
-
-      try {
-        const res = await fetch('/api/orders/create', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(orderPayload)
-        });
-
-        const data = await res.json().catch(() => ({}));
-
-        if (res.ok) {
-          showToast('Commande envoyée ! Nous vous contactons rapidement au ' + phone + '.');
-          cart = [];
-          updateCartUI();
-          document.getElementById('client-name').value = '';
-          document.getElementById('client-phone').value = '';
-          document.getElementById('client-address').value = '';
-        } else {
-          showToast(data.error || "Erreur lors de l'envoi de la commande.", true);
+            countEl.textContent = totalItems;
+            totalEl.textContent = `${total.toLocaleString('fr-FR')} FCFA`;
+            lucide.createIcons();
         }
-      } catch (err) {
-        console.error(err);
-        showToast('Erreur réseau. Vérifiez votre connexion et réessayez.', true);
-      } finally {
-        btn.disabled = false;
-        btn.textContent = 'Valider la Commande';
-      }
-    }
 
-    function scrollToCatalog() {
-      document.getElementById('category-tabs').scrollIntoView({ behavior: 'smooth' });
-    }
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+        }
 
-    renderProducts();
-  </script>
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.toggle('error', isError);
+            toast.classList.add('show');
+            clearTimeout(showToast._t);
+            showToast._t = setTimeout(() => toast.classList.remove('show'), 3500);
+        }
+
+        async function submitOrder() {
+            const name = document.getElementById('client-name').value.trim();
+            const phone = document.getElementById('client-phone').value.trim();
+            const address = document.getElementById('client-address').value.trim();
+            const btn = document.getElementById('submit-order-btn');
+
+            if (!name || !phone || !address) {
+                showToast('Veuillez remplir votre nom, téléphone et quartier de livraison.', true);
+                return;
+            }
+            if (cart.length === 0) {
+                showToast('Votre panier est vide.', true);
+                return;
+            }
+
+            const orderPayload = {
+                client: { name, phone, address },
+                items: cart.map(({ id, name, price, qty }) => ({ id, name, price, qty })),
+                total: cart.reduce((sum, item) => sum + (item.price * item.qty), 0),
+                paymentMethod: 'Paiement à la livraison (Libreville)'
+            };
+
+            btn.disabled = true;
+            btn.textContent = 'Envoi en cours...';
+
+            try {
+                const res = await fetch('/api/orders/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(orderPayload)
+                });
+
+                const data = await res.json().catch(() => ({}));
+
+                if (res.ok) {
+                    showToast('Commande envoyée ! Nous vous contactons rapidement au ' + phone + '.');
+                    cart = [];
+                    updateCartUI();
+                    document.getElementById('client-name').value = '';
+                    document.getElementById('client-phone').value = '';
+                    document.getElementById('client-address').value = '';
+                } else {
+                    showToast(data.error || "Erreur lors de l'envoi de la commande.", true);
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('Erreur réseau. Vérifiez votre connexion et réessayez.', true);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Valider la Commande';
+            }
+        }
+
+        function scrollToCatalog() {
+            document.getElementById('category-tabs').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        async function fetchRealTimeProducts() {
+            try {
+                const res = await fetch('/api/products');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.products && data.products.length > 0) {
+                        const grouped = { caps: [], sacs: [], parfums: [] };
+                        data.products.forEach(p => {
+                            if (!grouped[p.category]) grouped[p.category] = [];
+                            grouped[p.category].push(p);
+                        });
+                        products = grouped;
+                        renderProducts();
+                    }
+                }
+            } catch (err) {
+                console.error('Erreur API produits:', err);
+            }
+        }
+
+        // Rendu initial (fallback)
+        renderProducts();
+        
+        // Chargement temps réel
+        fetchRealTimeProducts();
+    </script>
 </body>
 
 </html>

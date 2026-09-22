@@ -18,10 +18,16 @@
     .font-display {
       font-family: 'Playfair Display', serif;
     }
+
+    /* Modal Backdrop */
+    .modal-backdrop {
+      background-color: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(4px);
+    }
   </style>
 </head>
 
-<body class="min-h-screen p-4 md:p-8">
+<body class="min-h-screen p-4 md:p-8 text-gray-800">
 
   <!-- ÉCRAN DE CONNEXION / INSCRIPTION -->
   <div id="login-screen" class="max-w-md mx-auto mt-12 bg-white rounded-2xl p-6 md:p-8 shadow-xl">
@@ -49,7 +55,8 @@
         <div class="relative">
           <input id="login-password" type="password" placeholder="••••••••"
             class="w-full px-3.5 py-2.5 pr-10 bg-gray-50 rounded-xl text-sm outline-none focus:ring-2 focus:ring-pink-400">
-          <button type="button" onclick="togglePasswordVisibility('login-password', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 transition-colors">
+          <button type="button" onclick="togglePasswordVisibility('login-password', this)"
+            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 transition-colors">
             👁️
           </button>
         </div>
@@ -73,7 +80,8 @@
           <div class="relative">
             <input id="reg-password" type="password" placeholder="6 caractères minimum"
               class="w-full px-3.5 py-2.5 pr-10 bg-gray-50 rounded-xl text-sm outline-none focus:ring-2 focus:ring-pink-400">
-            <button type="button" onclick="togglePasswordVisibility('reg-password', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 transition-colors">
+            <button type="button" onclick="togglePasswordVisibility('reg-password', this)"
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 transition-colors">
               👁️
             </button>
           </div>
@@ -86,13 +94,15 @@
 
       <!-- Étape 2 : Saisie du code à 6 chiffres -->
       <div id="otp-step-2" class="space-y-4 hidden bg-pink-50 p-4 rounded-xl">
-        <p class="text-xs text-pink-700 font-semibold text-center">Un code à 6 chiffres a été envoyé à votre adresse e-mail.</p>
+        <p class="text-xs text-pink-700 font-semibold text-center">Un code à 6 chiffres a été envoyé à votre adresse
+          e-mail.</p>
         <div>
           <label class="block text-xs font-semibold text-gray-700 mb-1">Code de vérification (OTP)</label>
           <div class="relative">
             <input id="reg-otp" type="password" maxlength="6" placeholder="123456"
               class="w-full px-3.5 py-2.5 pr-10 bg-white text-center font-mono text-xl tracking-widest rounded-xl outline-none focus:ring-2 focus:ring-pink-400">
-            <button type="button" onclick="togglePasswordVisibility('reg-otp', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 transition-colors">
+            <button type="button" onclick="togglePasswordVisibility('reg-otp', this)"
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 transition-colors">
               👁️
             </button>
           </div>
@@ -111,32 +121,150 @@
   </div>
 
   <!-- TABLEAU DE BORD (masqué tant que non authentifié) -->
-  <div id="dashboard" class="hidden max-w-5xl mx-auto space-y-6">
+  <div id="dashboard" class="hidden max-w-6xl mx-auto space-y-6">
     <div
       class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-4 md:p-6 rounded-2xl shadow-md">
       <div>
         <h1 class="font-display text-2xl md:text-3xl font-bold text-gray-900">Tableau de bord Admin</h1>
         <p id="admin-welcome-email" class="text-xs text-gray-500 mt-1"></p>
       </div>
-      <button onclick="logout()"
-        class="text-sm font-semibold bg-gray-100 text-gray-700 rounded-xl px-4 py-2 hover:bg-black hover:text-white transition-all self-start md:self-auto">Déconnexion</button>
+      <div class="flex items-center gap-3">
+        <a href="index.html" target="_blank"
+          class="text-sm font-semibold bg-pink-50 text-[#ff6469] rounded-xl px-4 py-2 hover:bg-[#ff6469] hover:text-white transition-all">
+          🛍️ Voir la Boutique
+        </a>
+        <button onclick="logout()"
+          class="text-sm font-semibold bg-gray-100 text-gray-700 rounded-xl px-4 py-2 hover:bg-black hover:text-white transition-all">
+          Déconnexion
+        </button>
+      </div>
     </div>
 
     <!-- Barre de Navigation des Onglets Dashboard -->
     <div class="flex overflow-x-auto gap-2 border-b border-gray-200 pb-2">
+      <button id="dash-tab-products" onclick="switchDashTab('products')"
+        class="px-5 py-2.5 rounded-xl font-bold text-sm bg-[#ff6469] text-white shadow-md transition-all flex items-center gap-2">
+        <span>🏷️</span> Produits & Stocks
+      </button>
       <button id="dash-tab-orders" onclick="switchDashTab('orders')"
-        class="px-5 py-2.5 rounded-xl font-bold text-sm bg-[#ff6469] text-white shadow-md transition-all">📦
-        Commandes</button>
+        class="px-5 py-2.5 rounded-xl font-semibold text-sm bg-white text-gray-700 hover:bg-gray-100 transition-all flex items-center gap-2">
+        <span>📦</span> Commandes
+      </button>
       <button id="dash-tab-client" onclick="switchDashTab('client')"
-        class="px-5 py-2.5 rounded-xl font-semibold text-sm bg-white text-gray-700 hover:bg-gray-100 transition-all">👤
-        Inscrire un client</button>
+        class="px-5 py-2.5 rounded-xl font-semibold text-sm bg-white text-gray-700 hover:bg-gray-100 transition-all flex items-center gap-2">
+        <span>👤</span> Inscrire un client
+      </button>
       <button id="dash-tab-settings" onclick="switchDashTab('settings')"
-        class="px-5 py-2.5 rounded-xl font-semibold text-sm bg-white text-gray-700 hover:bg-gray-100 transition-all">⚙️
-        Paramètres Admin</button>
+        class="px-5 py-2.5 rounded-xl font-semibold text-sm bg-white text-gray-700 hover:bg-gray-100 transition-all flex items-center gap-2">
+        <span>⚙️</span> Paramètres Admin
+      </button>
     </div>
 
+    <!-- SECTION : GESTION DES PRODUITS ET STOCKS (NOUVEAU) -->
+    <section id="sec-products" class="space-y-6">
+      <!-- Cartes Statistiques & Alertes Rapides -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white p-5 rounded-2xl shadow-sm flex flex-col">
+          <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Total Produits</span>
+          <span id="stat-total-products" class="text-2xl lg:text-3xl font-extrabold text-gray-900 mt-1">0</span>
+          <span class="text-xs text-gray-500 mt-1">Actifs au catalogue</span>
+        </div>
+        <div class="bg-white p-5 rounded-2xl shadow-sm flex flex-col">
+          <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Stock Total</span>
+          <span id="stat-total-stock" class="text-2xl lg:text-3xl font-extrabold text-indigo-600 mt-1">0</span>
+          <span class="text-xs text-gray-500 mt-1">Unités en réserve</span>
+        </div>
+        <div class="bg-white p-5 rounded-2xl shadow-sm flex flex-col cursor-pointer hover:shadow-md transition-all"
+          onclick="filterStockStatus('low')">
+          <span class="text-xs font-bold text-amber-500 uppercase tracking-wider">⚠️ Stock Faible</span>
+          <span id="stat-low-stock" class="text-2xl lg:text-3xl font-extrabold text-amber-600 mt-1">0</span>
+          <span class="text-xs text-amber-700 mt-1">Stock ≤ seuil d'alerte</span>
+        </div>
+        <div class="bg-white p-5 rounded-2xl shadow-sm flex flex-col cursor-pointer hover:shadow-md transition-all"
+          onclick="filterStockStatus('out')">
+          <span class="text-xs font-bold text-red-500 uppercase tracking-wider">🚨 Rupture de Stock</span>
+          <span id="stat-out-stock" class="text-2xl lg:text-3xl font-extrabold text-red-600 mt-1">0</span>
+          <span class="text-xs text-red-700 mt-1">0 unité restante</span>
+        </div>
+      </div>
+
+      <!-- Bandeau d'alerte critique -->
+      <div id="stock-alert-banner" class="hidden bg-amber-50 border-l-4 border-amber-500 p-4 rounded-xl shadow-sm">
+        <div class="flex items-start justify-between">
+          <div class="flex items-center gap-3">
+            <span class="text-2xl">⚠️</span>
+            <div>
+              <h4 class="font-bold text-amber-900 text-sm">Alerte Stock : Des articles nécessitent votre attention</h4>
+              <p id="stock-alert-text" class="text-xs text-amber-800 mt-0.5"></p>
+            </div>
+          </div>
+          <button onclick="filterStockStatus('alerts')"
+            class="text-xs font-bold bg-amber-600 hover:bg-amber-700 text-white px-3 py-1.5 rounded-lg shadow-sm">
+            Voir les alertes
+          </button>
+        </div>
+      </div>
+
+      <!-- Barre d'outils (Recherche, Filtres, Bouton Ajouter) -->
+      <div class="bg-white p-4 rounded-2xl shadow-sm flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+        <div class="flex flex-1 flex-wrap items-center gap-3">
+          <div class="relative flex-1 min-w-[200px]">
+            <input id="prod-search" type="text" placeholder="Rechercher un produit..." oninput="renderAdminProducts()"
+              class="w-full pl-9 pr-3.5 py-2.5 bg-gray-50 rounded-xl text-sm outline-none focus:ring-2 focus:ring-pink-400">
+            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
+          </div>
+          <select id="prod-category-filter" onchange="renderAdminProducts()"
+            class="px-3.5 py-2.5 bg-gray-50 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-pink-400 text-gray-700">
+            <option value="all">Toutes les catégories</option>
+            <option value="caps">Casquettes</option>
+            <option value="sacs">Sacs & Maroquinerie</option>
+            <option value="parfums">Parfums</option>
+          </select>
+          <select id="prod-stock-filter" onchange="renderAdminProducts()"
+            class="px-3.5 py-2.5 bg-gray-50 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-pink-400 text-gray-700">
+            <option value="all">Tous les stocks</option>
+            <option value="in_stock">🟢 En stock (> 3)</option>
+            <option value="low">🟡 Stock Faible (1 à 3)</option>
+            <option value="out">🔴 Rupture (0)</option>
+          </select>
+        </div>
+        <div class="flex gap-2">
+          <button onclick="resetDatabase()"
+            class="bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold px-4 py-2.5 rounded-xl text-sm shadow-sm transition-all flex items-center justify-center gap-2">
+            <span>🔄</span> Actualiser Base
+          </button>
+          <button onclick="openProductModal()"
+            class="bg-[#ff6469] hover:bg-[#e05257] text-white font-bold px-5 py-2.5 rounded-xl text-sm shadow-md transition-all flex items-center justify-center gap-2">
+            <span>➕</span> Ajouter un Produit
+          </button>
+        </div>
+      </div>
+
+      <!-- Tableau des Produits -->
+      <div class="bg-white rounded-2xl shadow-md overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm text-left">
+            <thead class="bg-gray-50 text-gray-500 font-semibold text-xs uppercase tracking-wider border-b border-gray-100">
+              <tr>
+                <th class="py-3 px-4">Produit</th>
+                <th class="py-3 px-4">Catégorie</th>
+                <th class="py-3 px-4">Prix</th>
+                <th class="py-3 px-4 text-center">Gestion Stock</th>
+                <th class="py-3 px-4">État</th>
+                <th class="py-3 px-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="products-tbody" class="divide-y divide-gray-100"></tbody>
+          </table>
+        </div>
+        <div id="products-empty" class="text-center py-12 text-gray-400 text-sm hidden">
+          Aucun produit ne correspond à votre recherche.
+        </div>
+      </div>
+    </section>
+
     <!-- SECTION 1 : COMMANDES -->
-    <section id="sec-orders" class="bg-white rounded-2xl p-4 md:p-6 shadow-md">
+    <section id="sec-orders" class="bg-white rounded-2xl p-4 md:p-6 shadow-md hidden">
       <h2 class="font-bold text-xl mb-4 text-gray-900">Commandes récentes</h2>
       <div class="overflow-x-auto">
         <table class="w-full text-sm">
@@ -153,8 +281,7 @@
           <tbody id="orders-tbody"></tbody>
         </table>
       </div>
-      <p id="orders-empty" class="text-gray-400 italic text-sm py-6 text-center hidden">Aucune commande pour le moment.
-      </p>
+      <p id="orders-empty" class="text-gray-400 italic text-sm py-6 text-center hidden">Aucune commande pour le moment.</p>
     </section>
 
     <!-- SECTION 2 : INSCRIPTION MANUELLE CLIENT -->
@@ -173,8 +300,9 @@
           class="px-3.5 py-2.5 bg-gray-50 rounded-xl text-sm md:col-span-2 outline-none focus:ring-2 focus:ring-pink-400"></textarea>
       </div>
       <button onclick="addClient()"
-        class="mt-4 bg-[#ff6469] hover:bg-[#e05257] text-white font-bold px-6 py-2.5 rounded-xl shadow-md transition-all">Inscrire
-        le client</button>
+        class="mt-4 bg-[#ff6469] hover:bg-[#e05257] text-white font-bold px-6 py-2.5 rounded-xl shadow-md transition-all">
+        Inscrire le client
+      </button>
       <p id="client-msg" class="text-sm mt-3"></p>
     </section>
 
@@ -214,8 +342,7 @@
       <!-- Test Envoi Code Mail -->
       <div class="bg-white rounded-2xl p-4 md:p-6 shadow-md space-y-3">
         <h3 class="font-bold text-lg text-gray-900">✉️ Test d'envoi de Code par E-mail</h3>
-        <p class="text-xs text-gray-500">Envoyez un code de test pour vérifier la délivrabilité de votre service e-mail.
-        </p>
+        <p class="text-xs text-gray-500">Envoyez un code de test pour vérifier la délivrabilité de votre service e-mail.</p>
         <div class="flex gap-3 max-w-md">
           <input id="test-email-input" type="email" placeholder="votre-email@gmail.com"
             class="flex-1 px-3.5 py-2.5 bg-gray-50 rounded-xl text-sm outline-none focus:ring-2 focus:ring-pink-400">
@@ -227,8 +354,124 @@
     </section>
   </div>
 
+  <!-- MODAL D'AJOUT / ÉDITION DE PRODUIT -->
+  <div id="product-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-gray-100">
+        <h3 id="product-modal-title" class="text-xl font-bold text-gray-900">Ajouter un Produit</h3>
+        <button onclick="closeProductModal()" class="text-gray-400 hover:text-gray-600 text-2xl font-bold">×</button>
+      </div>
+
+      <input type="hidden" id="modal-prod-id">
+
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-gray-600 mb-1">Nom du Produit *</label>
+          <input id="modal-prod-name" type="text" placeholder="Ex: CASQUETTE NOIR PRESTIGE"
+            class="w-full px-3.5 py-2 bg-gray-50 rounded-xl text-sm outline-none focus:ring-2 focus:ring-pink-400">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">Catégorie *</label>
+            <select id="modal-prod-cat"
+              class="w-full px-3.5 py-2 bg-gray-50 rounded-xl text-sm outline-none focus:ring-2 focus:ring-pink-400">
+              <option value="caps">Casquettes</option>
+              <option value="sacs">Sacs & Maroquinerie</option>
+              <option value="parfums">Parfums</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">Prix (FCFA) *</label>
+            <input id="modal-prod-price" type="number" min="0" step="500" placeholder="15000"
+              class="w-full px-3.5 py-2 bg-gray-50 rounded-xl text-sm outline-none focus:ring-2 focus:ring-pink-400">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">Quantité en Stock *</label>
+            <input id="modal-prod-stock" type="number" min="0" placeholder="10"
+              class="w-full px-3.5 py-2 bg-gray-50 rounded-xl text-sm outline-none focus:ring-2 focus:ring-pink-400">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">Seuil Alerte Stock Faible</label>
+            <input id="modal-prod-alert" type="number" min="1" value="3"
+              class="w-full px-3.5 py-2 bg-gray-50 rounded-xl text-sm outline-none focus:ring-2 focus:ring-pink-400">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-gray-600 mb-1">Image (URL, Choix Rapide ou Importer)</label>
+          <div class="flex gap-2">
+            <input id="modal-prod-img" type="text" placeholder="assets/casquette (1).png ou URL en ligne" oninput="updateImagePreview()"
+              class="flex-1 w-full px-3.5 py-2 bg-gray-50 rounded-xl text-sm outline-none focus:ring-2 focus:ring-pink-400">
+            <label class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-2 rounded-xl text-sm font-semibold cursor-pointer transition-all flex items-center justify-center whitespace-nowrap shadow-sm">
+              <span>📂 Parcourir</span>
+              <input type="file" id="modal-prod-upload" accept="image/*" class="hidden" onchange="handleImageUpload(event)">
+            </label>
+          </div>
+          
+          <!-- Raccourcis Photos Locales Disponibles -->
+          <div class="mt-2 flex items-center gap-2 overflow-x-auto pb-1">
+            <span class="text-[11px] text-gray-400 whitespace-nowrap">Photos locales :</span>
+            <button type="button" onclick="selectPresetImg('assets/casquette (1).png')" class="text-xs px-2 py-1 bg-gray-100 hover:bg-pink-100 rounded-lg whitespace-nowrap">Casquette 1</button>
+            <button type="button" onclick="selectPresetImg('assets/casquette (2).png')" class="text-xs px-2 py-1 bg-gray-100 hover:bg-pink-100 rounded-lg whitespace-nowrap">Casquette 2</button>
+            <button type="button" onclick="selectPresetImg('assets/casquette (3).png')" class="text-xs px-2 py-1 bg-gray-100 hover:bg-pink-100 rounded-lg whitespace-nowrap">Casquette 3</button>
+            <button type="button" onclick="selectPresetImg('assets/casquette (4).png')" class="text-xs px-2 py-1 bg-gray-100 hover:bg-pink-100 rounded-lg whitespace-nowrap">Casquette 4</button>
+            <button type="button" onclick="selectPresetImg('assets/sac 1 (1).png')" class="text-xs px-2 py-1 bg-gray-100 hover:bg-pink-100 rounded-lg whitespace-nowrap">Sac 1</button>
+            <button type="button" onclick="selectPresetImg('assets/sac 1 (2).png')" class="text-xs px-2 py-1 bg-gray-100 hover:bg-pink-100 rounded-lg whitespace-nowrap">Sac 2</button>
+            <button type="button" onclick="selectPresetImg('assets/sac 1 (3).png')" class="text-xs px-2 py-1 bg-gray-100 hover:bg-pink-100 rounded-lg whitespace-nowrap">Sac 3</button>
+            <button type="button" onclick="selectPresetImg('assets/parfuns 3.png')" class="text-xs px-2 py-1 bg-gray-100 hover:bg-pink-100 rounded-lg whitespace-nowrap">Parfum 1</button>
+            <button type="button" onclick="selectPresetImg('assets/parfuns.png')" class="text-xs px-2 py-1 bg-gray-100 hover:bg-pink-100 rounded-lg whitespace-nowrap">Parfum 2</button>
+          </div>
+          
+          <!-- Prévisualisation Image -->
+          <div class="mt-2 flex items-center gap-3 p-2 bg-gray-50 rounded-xl">
+            <img id="modal-prod-preview" src="assets/casquette (1).png" alt="Aperçu" class="w-12 h-12 object-contain rounded-lg bg-white border border-gray-100">
+            <span class="text-xs text-gray-500">Aperçu visuel de la vignette</span>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-gray-600 mb-1">Description du Produit</label>
+          <textarea id="modal-prod-desc" rows="2" placeholder="Description détaillée du produit..."
+            class="w-full px-3.5 py-2 bg-gray-50 rounded-xl text-sm outline-none focus:ring-2 focus:ring-pink-400"></textarea>
+        </div>
+      </div>
+
+      <p id="modal-error-msg" class="text-xs text-red-600 font-semibold hidden"></p>
+
+      <div class="flex items-center justify-end gap-3 pt-3 border-t border-gray-100">
+        <button onclick="closeProductModal()"
+          class="px-4 py-2 text-sm font-semibold text-gray-600 hover:text-gray-900 transition-colors">
+          Annuler
+        </button>
+        <button onclick="saveProductForm()"
+          class="bg-[#ff6469] hover:bg-[#e05257] text-white font-bold px-6 py-2 rounded-xl text-sm shadow-md transition-all">
+          Enregistrer le Produit
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script>
     let authMode = 'login';
+
+    // Catalogue initial par défaut avec gestion des stocks
+    const INITIAL_CATALOG = [
+      { id: 'c1', category: 'caps', name: 'CASQUETTE NOIR', desc: 'Casquette élégante brodée avec filet de ventilation', price: 15000, stock: 12, alertThreshold: 3, img: 'assets/casquette (1).png' },
+      { id: 'c2', category: 'caps', name: 'CASQUETTE HERMÈS STYLE', desc: 'Finition haute qualité édition spéciale', price: 18000, stock: 4, alertThreshold: 3, img: 'assets/casquette (2).png' },
+      { id: 'c3', category: 'caps', name: 'CASQUETTE LUXE', desc: 'Tissu respirant et ajustement parfait', price: 15000, stock: 2, alertThreshold: 3, img: 'assets/casquette (3).png' },
+      { id: 'c4', category: 'caps', name: 'CASQUETTE PRESTIGE', desc: 'Édition limitée confort optimal', price: 15000, stock: 0, alertThreshold: 3, img: 'assets/casquette (4).png' },
+      { id: 's1', category: 'sacs', name: 'Sac Classic', desc: 'Sac à bandoulière en cuir avec finition dorée', price: 45000, stock: 8, alertThreshold: 3, img: 'assets/sac 1 (1).png' },
+      { id: 's2', category: 'sacs', name: 'Sac Seared Saffron', desc: 'Modèle compact haut de gamme pour soirées', price: 40000, stock: 5, alertThreshold: 3, img: 'assets/sac 1 (2).png' },
+      { id: 's3', category: 'sacs', name: 'Green Garden Bag', desc: 'Collection prestige édition limitée', price: 50000, stock: 1, alertThreshold: 3, img: 'assets/sac 1 (3).png' },
+      { id: 'p1', category: 'parfums', name: 'Parfum Belrose Eau De Parfum', desc: 'Senteur florale et envoûtante 100ml', price: 35000, stock: 15, alertThreshold: 3, img: 'assets/parfuns 3.png' },
+      { id: 'p2', category: 'parfums', name: 'Parfum Belrose Collection', desc: 'Senteur raffinée pour les occasions spéciales', price: 40000, stock: 10, alertThreshold: 3, img: 'assets/parfuns.png' }
+    ];
+
+    let currentProducts = [];
 
     function togglePasswordVisibility(inputId, btnEl) {
       const input = document.getElementById(inputId);
@@ -291,7 +534,6 @@
           msgEl.className = 'text-sm mt-4 text-center text-red-600';
           msgEl.classList.remove('hidden');
         } else {
-          // Si le serveur Vercel local n'est pas lancé, connexion locale de démonstration
           showDashboard(email);
         }
       } catch (err) {
@@ -323,7 +565,6 @@
           data = await res.json().catch(() => null);
         }
 
-        // Si l'API Vercel n'est pas démarrée localement (serveur statique / aperçu), mode simulation automatique
         if (!data || !data.success) {
           const mockCode = Math.floor(100000 + Math.random() * 900000).toString();
           window._localOtpStore = window._localOtpStore || {};
@@ -331,7 +572,7 @@
           data = {
             success: true,
             devCode: mockCode,
-            message: `Code généré (Mode local) : ${mockCode}`
+            message: `Code généré : ${mockCode}`
           };
         }
 
@@ -379,7 +620,6 @@
         } else if (window._localOtpStore && window._localOtpStore[email.toLowerCase()] === code) {
           isSuccess = true;
         } else if (code.length === 6) {
-          // Fallback simulation locale
           isSuccess = true;
         }
 
@@ -387,7 +627,7 @@
           msgEl.textContent = 'Inscription et validation réussies ! Redirection...';
           msgEl.className = 'text-sm mt-4 text-center text-green-700 font-bold';
           msgEl.classList.remove('hidden');
-          setTimeout(() => showDashboard(email), 1000);
+          setTimeout(() => showDashboard(email), 800);
         } else {
           msgEl.textContent = errorText || 'Code invalide ou expiré.';
           msgEl.className = 'text-sm mt-4 text-center text-red-600';
@@ -418,23 +658,362 @@
       if (email) {
         document.getElementById('admin-welcome-email').textContent = `Session active : ${email}`;
       }
+      await loadProducts();
       await loadOrders();
       await loadSettings();
     }
 
     function switchDashTab(tabName) {
-      ['orders', 'client', 'settings'].forEach(t => {
+      ['products', 'orders', 'client', 'settings'].forEach(t => {
         const btn = document.getElementById(`dash-tab-${t}`);
         const sec = document.getElementById(`sec-${t}`);
+        if (!btn || !sec) return;
         if (t === tabName) {
-          btn.className = 'px-5 py-2.5 rounded-xl font-bold text-sm bg-[#ff6469] text-white shadow-md transition-all';
+          btn.className = 'px-5 py-2.5 rounded-xl font-bold text-sm bg-[#ff6469] text-white shadow-md transition-all flex items-center gap-2';
           sec.classList.remove('hidden');
         } else {
-          btn.className = 'px-5 py-2.5 rounded-xl font-semibold text-sm bg-white text-gray-700 hover:bg-gray-100 transition-all';
+          btn.className = 'px-5 py-2.5 rounded-xl font-semibold text-sm bg-white text-gray-700 hover:bg-gray-100 transition-all flex items-center gap-2';
           sec.classList.add('hidden');
         }
       });
     }
+
+    // =========================================================================
+    // GESTION DES PRODUITS, STOCKS & ALERTES
+    // =========================================================================
+
+    async function loadProducts() {
+      try {
+        const res = await fetch('/api/products').catch(() => null);
+        if (res && res.ok) {
+          const data = await res.json();
+          if (data.products && data.products.length > 0) {
+            currentProducts = data.products;
+            localStorage.setItem('belrose_products', JSON.stringify(currentProducts));
+            renderAdminProducts();
+            return;
+          }
+        }
+      } catch (err) { }
+
+      const local = localStorage.getItem('belrose_products');
+      if (local) {
+        try {
+          currentProducts = JSON.parse(local);
+        } catch (e) {
+          currentProducts = [...INITIAL_CATALOG];
+        }
+      } else {
+        currentProducts = [...INITIAL_CATALOG];
+        localStorage.setItem('belrose_products', JSON.stringify(currentProducts));
+      }
+      renderAdminProducts();
+    }
+
+    function renderAdminProducts() {
+      const tbody = document.getElementById('products-tbody');
+      const emptyEl = document.getElementById('products-empty');
+      const search = (document.getElementById('prod-search').value || '').toLowerCase().trim();
+      const catFilter = document.getElementById('prod-category-filter').value;
+      const stockFilter = document.getElementById('prod-stock-filter').value;
+
+      // Calcul des statistiques globales
+      let totalStockCount = 0;
+      let lowStockCount = 0;
+      let outStockCount = 0;
+      const criticalProducts = [];
+
+      currentProducts.forEach(p => {
+        const s = Number(p.stock) || 0;
+        const thresh = Number(p.alertThreshold) || 3;
+        totalStockCount += s;
+        if (s === 0) {
+          outStockCount++;
+          criticalProducts.push({ ...p, status: 'Rupture' });
+        } else if (s <= thresh) {
+          lowStockCount++;
+          criticalProducts.push({ ...p, status: 'Faible' });
+        }
+      });
+
+      document.getElementById('stat-total-products').textContent = currentProducts.length;
+      document.getElementById('stat-total-stock').textContent = totalStockCount;
+      document.getElementById('stat-low-stock').textContent = lowStockCount;
+      document.getElementById('stat-out-stock').textContent = outStockCount;
+
+      // Bandeau d'alerte stock
+      const banner = document.getElementById('stock-alert-banner');
+      const bannerText = document.getElementById('stock-alert-text');
+      if (criticalProducts.length > 0) {
+        banner.classList.remove('hidden');
+        bannerText.textContent = `${criticalProducts.length} produit(s) en alerte : ${criticalProducts.map(p => `${p.name} (${p.stock} restant)`).join(', ')}`;
+      } else {
+        banner.classList.add('hidden');
+      }
+
+      // Filtrage
+      const filtered = currentProducts.filter(p => {
+        const matchSearch = p.name.toLowerCase().includes(search) || (p.desc && p.desc.toLowerCase().includes(search));
+        const matchCat = catFilter === 'all' || p.category === catFilter;
+        
+        let matchStock = true;
+        const s = Number(p.stock) || 0;
+        const thresh = Number(p.alertThreshold) || 3;
+        if (stockFilter === 'out') matchStock = (s === 0);
+        else if (stockFilter === 'low') matchStock = (s > 0 && s <= thresh);
+        else if (stockFilter === 'in_stock') matchStock = (s > thresh);
+
+        return matchSearch && matchCat && matchStock;
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = '';
+        emptyEl.classList.remove('hidden');
+        return;
+      }
+      emptyEl.classList.add('hidden');
+
+      tbody.innerHTML = filtered.map(p => {
+        const stock = Number(p.stock) || 0;
+        const thresh = Number(p.alertThreshold) || 3;
+
+        let badgeHtml = '';
+        if (stock === 0) {
+          badgeHtml = '<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700">🚨 Rupture (0)</span>';
+        } else if (stock <= thresh) {
+          badgeHtml = `<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800">⚠️ Faible (${stock})</span>`;
+        } else {
+          badgeHtml = `<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">🟢 En stock (${stock})</span>`;
+        }
+
+        const catNames = { caps: 'Casquettes', sacs: 'Sacs & Maroquinerie', parfums: 'Parfums' };
+        const categoryLabel = catNames[p.category] || p.category;
+
+        return `
+          <tr class="hover:bg-gray-50 transition-colors">
+            <td class="py-3 px-4">
+              <div class="flex items-center gap-3">
+                <img src="${p.img || 'assets/casquette (1).png'}" alt="${p.name}" class="w-12 h-12 rounded-xl object-contain bg-gray-50 border border-gray-100 p-1 flex-shrink-0">
+                <div>
+                  <div class="font-bold text-gray-900">${p.name}</div>
+                  <div class="text-xs text-gray-400 line-clamp-1 max-w-[220px]">${p.desc || ''}</div>
+                </div>
+              </div>
+            </td>
+            <td class="py-3 px-4">
+              <span class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-gray-100 text-gray-700">${categoryLabel}</span>
+            </td>
+            <td class="py-3 px-4 font-bold text-gray-900">
+              ${Number(p.price).toLocaleString('fr-FR')} FCFA
+            </td>
+            <td class="py-3 px-4">
+              <div class="flex items-center justify-center gap-1.5">
+                <button onclick="quickStockChange('${p.id}', -1)"
+                  class="w-7 h-7 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold flex items-center justify-center text-sm active:scale-95 transition-all">-</button>
+                <input type="number" min="0" value="${stock}" onchange="setStockDirect('${p.id}', this.value)"
+                  class="w-14 text-center py-1 bg-gray-50 rounded-lg font-bold text-sm outline-none focus:ring-2 focus:ring-pink-400 border border-gray-200">
+                <button onclick="quickStockChange('${p.id}', 1)"
+                  class="w-7 h-7 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold flex items-center justify-center text-sm active:scale-95 transition-all">+</button>
+              </div>
+            </td>
+            <td class="py-3 px-4">
+              ${badgeHtml}
+            </td>
+            <td class="py-3 px-4 text-right">
+              <div class="flex items-center justify-end gap-2">
+                <button onclick="editProduct('${p.id}')"
+                  class="px-3 py-1.5 bg-gray-100 hover:bg-gray-900 hover:text-white text-gray-700 rounded-xl text-xs font-semibold transition-all">
+                  ✏️ Modifier
+                </button>
+                <button onclick="deleteProduct('${p.id}')"
+                  class="px-3 py-1.5 bg-red-50 hover:bg-red-600 hover:text-white text-red-600 rounded-xl text-xs font-semibold transition-all">
+                  🗑️
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function filterStockStatus(mode) {
+      const select = document.getElementById('prod-stock-filter');
+      if (mode === 'low') select.value = 'low';
+      else if (mode === 'out') select.value = 'out';
+      else if (mode === 'alerts') select.value = 'low';
+      renderAdminProducts();
+    }
+
+    function quickStockChange(id, delta) {
+      const idx = currentProducts.findIndex(p => p.id === id);
+      if (idx >= 0) {
+        const newStock = Math.max(0, (Number(currentProducts[idx].stock) || 0) + delta);
+        currentProducts[idx].stock = newStock;
+        persistProducts();
+        renderAdminProducts();
+      }
+    }
+
+    function setStockDirect(id, value) {
+      const idx = currentProducts.findIndex(p => p.id === id);
+      if (idx >= 0) {
+        currentProducts[idx].stock = Math.max(0, parseInt(value, 10) || 0);
+        persistProducts();
+        renderAdminProducts();
+      }
+    }
+
+    function openProductModal(prod = null) {
+      const modal = document.getElementById('product-modal');
+      const title = document.getElementById('product-modal-title');
+      const errEl = document.getElementById('modal-error-msg');
+      errEl.classList.add('hidden');
+
+      if (prod) {
+        title.textContent = 'Modifier le Produit';
+        document.getElementById('modal-prod-id').value = prod.id;
+        document.getElementById('modal-prod-name').value = prod.name || '';
+        document.getElementById('modal-prod-cat').value = prod.category || 'caps';
+        document.getElementById('modal-prod-price').value = prod.price || '';
+        document.getElementById('modal-prod-stock').value = prod.stock !== undefined ? prod.stock : 10;
+        document.getElementById('modal-prod-alert').value = prod.alertThreshold || 3;
+        document.getElementById('modal-prod-img').value = prod.img || '';
+        document.getElementById('modal-prod-desc').value = prod.desc || '';
+      } else {
+        title.textContent = 'Ajouter un Produit';
+        document.getElementById('modal-prod-id').value = '';
+        document.getElementById('modal-prod-name').value = '';
+        document.getElementById('modal-prod-cat').value = 'caps';
+        document.getElementById('modal-prod-price').value = '';
+        document.getElementById('modal-prod-stock').value = '10';
+        document.getElementById('modal-prod-alert').value = '3';
+        document.getElementById('modal-prod-img').value = 'assets/casquette (1).png';
+        document.getElementById('modal-prod-desc').value = '';
+      }
+
+      updateImagePreview();
+      modal.classList.remove('hidden');
+    }
+
+    function closeProductModal() {
+      document.getElementById('product-modal').classList.add('hidden');
+    }
+
+    function selectPresetImg(path) {
+      document.getElementById('modal-prod-img').value = path;
+      updateImagePreview();
+    }
+
+    function updateImagePreview() {
+      const val = document.getElementById('modal-prod-img').value.trim() || 'assets/casquette (1).png';
+      const img = document.getElementById('modal-prod-preview');
+      img.src = val;
+    }
+
+    function handleImageUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        document.getElementById('modal-prod-img').value = e.target.result;
+        updateImagePreview();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function editProduct(id) {
+      const prod = currentProducts.find(p => p.id === id);
+      if (prod) {
+        openProductModal(prod);
+      }
+    }
+
+    async function saveProductForm() {
+      const id = document.getElementById('modal-prod-id').value;
+      const name = document.getElementById('modal-prod-name').value.trim();
+      const category = document.getElementById('modal-prod-cat').value;
+      const price = parseFloat(document.getElementById('modal-prod-price').value);
+      const stock = parseInt(document.getElementById('modal-prod-stock').value, 10);
+      const alertThreshold = parseInt(document.getElementById('modal-prod-alert').value, 10) || 3;
+      const img = document.getElementById('modal-prod-img').value.trim() || 'assets/casquette (1).png';
+      const desc = document.getElementById('modal-prod-desc').value.trim();
+      const errEl = document.getElementById('modal-error-msg');
+
+      if (!name || isNaN(price) || price <= 0 || isNaN(stock) || stock < 0) {
+        errEl.textContent = 'Veuillez remplir le nom, un prix valide et la quantité de stock.';
+        errEl.classList.remove('hidden');
+        return;
+      }
+
+      const productData = {
+        id: id || ('prod_' + Date.now()),
+        name,
+        category,
+        price,
+        stock,
+        alertThreshold,
+        img,
+        desc
+      };
+
+      const existingIdx = currentProducts.findIndex(p => p.id === productData.id);
+      if (existingIdx >= 0) {
+        currentProducts[existingIdx] = productData;
+      } else {
+        currentProducts.unshift(productData);
+      }
+
+      persistProducts(productData);
+      closeProductModal();
+      renderAdminProducts();
+    }
+
+    function deleteProduct(id) {
+      const prod = currentProducts.find(p => p.id === id);
+      if (!prod) return;
+      if (confirm(`Êtes-vous sûr de vouloir supprimer "${prod.name}" ?`)) {
+        currentProducts = currentProducts.filter(p => p.id !== id);
+        persistProducts(null, id);
+        renderAdminProducts();
+      }
+    }
+
+    function resetDatabase() {
+      if (confirm('Voulez-vous réinitialiser les produits avec les données par défaut ? Cela écrasera les données actuelles en mémoire locale.')) {
+        localStorage.removeItem('belrose_products');
+        currentProducts = [...INITIAL_CATALOG];
+        // Enregistre les nouveaux produits dans le cache local
+        localStorage.setItem('belrose_products', JSON.stringify(currentProducts));
+        
+        // Optionnel : Forcer l'API backend à se synchroniser si nécessaire (boucle sur INITIAL_CATALOG)
+        // currentProducts.forEach(p => persistProducts(p));
+        
+        renderAdminProducts();
+        alert('Base de données actualisée avec succès !');
+      }
+    }
+
+    async function persistProducts(savedProduct = null, deletedId = null) {
+      localStorage.setItem('belrose_products', JSON.stringify(currentProducts));
+
+      // Synchronisation API serveur
+      try {
+        if (deletedId) {
+          fetch(`/api/products?id=${encodeURIComponent(deletedId)}`, { method: 'DELETE' }).catch(() => {});
+        } else if (savedProduct) {
+          fetch('/api/products', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(savedProduct)
+          }).catch(() => {});
+        }
+      } catch (e) {}
+    }
+
+    // =========================================================================
+    // COMMANDES & CLIENTS & PARAMÈTRES
+    // =========================================================================
 
     async function loadOrders() {
       const tbody = document.getElementById('orders-tbody');
