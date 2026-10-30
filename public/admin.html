@@ -128,7 +128,11 @@
         <h1 class="font-display text-2xl md:text-3xl font-bold text-gray-900">Tableau de bord Admin</h1>
         <p id="admin-welcome-email" class="text-xs text-gray-500 mt-1"></p>
       </div>
-      <div class="flex items-center gap-3">
+      <div class="flex flex-wrap items-center gap-3">
+        <button id="btn-refresh-db" onclick="refreshAllDatabase(this)"
+          class="text-sm font-semibold bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white border border-emerald-200 rounded-xl px-4 py-2 transition-all flex items-center gap-2 shadow-sm">
+          <span>🔄</span> Actualiser la base de données
+        </button>
         <a href="index.html" target="_blank"
           class="text-sm font-semibold bg-pink-50 text-[#ff6469] rounded-xl px-4 py-2 hover:bg-[#ff6469] hover:text-white transition-all">
           🛍️ Voir la Boutique
@@ -145,6 +149,14 @@
       <button id="dash-tab-products" onclick="switchDashTab('products')"
         class="px-5 py-2.5 rounded-xl font-bold text-sm bg-[#ff6469] text-white shadow-md transition-all flex items-center gap-2">
         <span>🏷️</span> Produits & Stocks
+      </button>
+      <button id="dash-tab-banner" onclick="switchDashTab('banner')"
+        class="px-5 py-2.5 rounded-xl font-semibold text-sm bg-white text-gray-700 hover:bg-gray-100 transition-all flex items-center gap-2 border border-pink-100">
+        <span>🎨</span> Nom, Photo &amp; Couleurs
+      </button>
+      <button id="dash-tab-categories" onclick="switchDashTab('categories')"
+        class="px-5 py-2.5 rounded-xl font-semibold text-sm bg-white text-gray-700 hover:bg-gray-100 transition-all flex items-center gap-2 border border-emerald-100">
+        <span>👁️</span> Affichage Catégories
       </button>
       <button id="dash-tab-orders" onclick="switchDashTab('orders')"
         class="px-5 py-2.5 rounded-xl font-semibold text-sm bg-white text-gray-700 hover:bg-gray-100 transition-all flex items-center gap-2">
@@ -228,10 +240,14 @@
             <option value="out">🔴 Rupture (0)</option>
           </select>
         </div>
-        <div class="flex gap-2">
-          <button onclick="resetDatabase()"
+        <div class="flex flex-wrap gap-2">
+          <button onclick="saveAllProductsStock(this)" id="btn-save-all-stocks"
+            class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2.5 rounded-xl text-sm shadow-md transition-all flex items-center justify-center gap-2">
+            <span>💾</span> Enregistrer tous les stocks
+          </button>
+          <button onclick="loadProducts(true)"
             class="bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold px-4 py-2.5 rounded-xl text-sm shadow-sm transition-all flex items-center justify-center gap-2">
-            <span>🔄</span> Actualiser Base
+            <span>🔄</span> Actualiser
           </button>
           <button onclick="openProductModal()"
             class="bg-[#ff6469] hover:bg-[#e05257] text-white font-bold px-5 py-2.5 rounded-xl text-sm shadow-md transition-all flex items-center justify-center gap-2">
@@ -263,9 +279,286 @@
       </div>
     </section>
 
+    <!-- SECTION BANNIÈRE DU SITE -->
+    <section id="sec-banner" class="bg-white rounded-2xl p-6 shadow-md space-y-6 hidden">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-gray-100">
+        <div>
+          <h2 class="text-xl md:text-2xl font-bold text-gray-900 flex items-center gap-2">
+            <span>🏷️</span> Changer le Nom &amp; la Bannière du Site
+          </h2>
+          <p class="text-sm text-gray-500 mt-1">
+            Modifiez le nom de votre boutique et la grande photo d'accueil visibles par vos clients sur <span class="font-semibold text-pink-600">http://localhost:3000</span>.
+          </p>
+        </div>
+        <div class="flex items-center gap-2">
+          <a href="index.html" target="_blank"
+            class="text-xs font-bold bg-pink-50 hover:bg-[#ff6469] hover:text-white text-[#ff6469] px-4 py-2.5 rounded-xl transition-all flex items-center gap-1.5 shadow-sm">
+            <span>🛍️</span> Voir le site en direct
+          </a>
+        </div>
+      </div>
+
+      <!-- Bloc : Modification directe du Nom du Site -->
+      <div class="bg-gradient-to-r from-pink-50 via-rose-50 to-orange-50 border-2 border-pink-200 rounded-2xl p-5 space-y-3 shadow-sm">
+        <div class="flex items-center justify-between">
+          <label class="text-xs font-bold uppercase tracking-wider text-gray-800 flex items-center gap-2">
+            <span>🏷️</span> Nom de la boutique / Titre du site
+          </label>
+          <span class="text-xs text-pink-600 font-bold bg-white px-2.5 py-1 rounded-full border border-pink-200">Affichage en direct</span>
+        </div>
+        <p class="text-xs text-gray-600">
+          Tapez le nouveau nom ci-dessous. Il s'affiche en grand sur la bannière de la boutique et dans l'onglet du navigateur :
+        </p>
+        <div class="flex flex-col sm:flex-row gap-3">
+          <input id="set-store-name-banner" type="text" placeholder="Ex: BELROSE WALLY ou BELSHOP"
+            oninput="updateStoreNameLive(this.value)"
+            class="flex-1 px-4 py-3 bg-white border border-gray-300 rounded-xl text-base font-bold text-gray-900 outline-none focus:ring-2 focus:ring-pink-400 shadow-sm">
+          <button id="btn-save-store-name" onclick="saveStoreNameDirect(this)"
+            class="bg-[#ff6469] hover:bg-[#e05257] text-white font-bold px-6 py-3 rounded-xl text-sm shadow-md transition-all flex items-center justify-center gap-2 whitespace-nowrap">
+            <span>💾</span> Enregistrer le nom
+          </button>
+        </div>
+      </div>
+
+      <!-- Aperçu en direct -->
+      <div>
+        <div class="flex items-center justify-between mb-2">
+          <label class="text-xs font-bold uppercase tracking-wider text-gray-500">
+            Aperçu en direct sur la boutique
+          </label>
+          <span class="text-xs text-gray-400">Rendu temps réel</span>
+        </div>
+        <div class="relative w-full h-64 md:h-80 rounded-2xl overflow-hidden bg-black shadow-lg flex items-center justify-center text-center border-2 border-gray-100">
+          <img id="banner-live-preview" src="assets/BARNNIERED.PNG" alt="Aperçu bannière"
+            class="absolute inset-0 w-full h-full object-cover opacity-60 transition-all duration-300" onerror="this.src='assets/affiche.png'">
+          <div class="relative z-10 px-4">
+            <span class="inline-block px-3 py-1 bg-black/50 backdrop-blur-sm text-white text-xs rounded-full uppercase tracking-wider font-bold mb-2">En-tête de votre boutique</span>
+            <h3 id="banner-preview-title" class="font-display text-4xl md:text-6xl font-extrabold text-pink-400 drop-shadow-md">BELROSE WALLY</h3>
+            <p class="text-base md:text-xl font-bold tracking-widest uppercase text-white mt-1">SHOP.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Zone de sélection et boutons d'action -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="border-2 border-dashed border-gray-300 hover:border-[#ff6469] rounded-2xl p-6 text-center cursor-pointer transition-all bg-gray-50 hover:bg-pink-50/40 flex flex-col items-center justify-center group"
+          onclick="document.getElementById('banner-file-input').click()">
+          <input type="file" id="banner-file-input" accept="image/*" class="hidden" onchange="handleBannerFileSelect(event)">
+          <div class="w-16 h-16 rounded-full bg-white shadow-md flex items-center justify-center text-3xl mb-3 group-hover:scale-110 transition-transform">
+            📸
+          </div>
+          <p class="text-sm font-bold text-gray-900">Cliquez pour importer votre photo</p>
+          <p class="text-xs text-gray-500 mt-1">PNG, JPG, JPEG ou WEBP depuis votre ordinateur</p>
+          <button type="button" class="mt-4 px-5 py-2.5 bg-[#ff6469] group-hover:bg-[#e05257] text-white text-xs font-bold rounded-xl shadow-md transition-colors flex items-center gap-2">
+            <span>📁</span> Parcourir mes fichiers...
+          </button>
+        </div>
+
+        <div class="bg-gray-50 rounded-2xl p-6 flex flex-col justify-between border border-gray-100">
+          <div>
+            <h4 class="text-sm font-bold text-gray-900 mb-1 flex items-center gap-2">
+              <span>⚡</span> Sauvegarde instantanée
+            </h4>
+            <p class="text-xs text-gray-500 mb-3">
+              Après avoir choisi votre image, cliquez sur le bouton vert ci-dessous. La photo sera automatiquement enregistrée sur le serveur et affichée immédiatement sur la boutique.
+            </p>
+            <div id="banner-status-msg" class="text-xs font-semibold py-2.5 px-3.5 rounded-xl hidden mb-3"></div>
+          </div>
+          <div class="flex flex-col sm:flex-row gap-3 pt-2">
+            <button id="btn-save-banner" onclick="saveNewBanner()"
+              class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-xl text-sm shadow-md transition-all flex items-center justify-center gap-2">
+              <span>💾</span> Enregistrer sur le site
+            </button>
+            <button type="button" onclick="resetDefaultBanner()"
+              class="px-4 py-3 bg-white hover:bg-gray-100 text-gray-700 font-bold border border-gray-200 rounded-xl text-sm transition-all flex items-center justify-center gap-1.5">
+              <span>🔄</span> Réinitialiser
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- SECTION : COULEURS DU SITE -->
+      <div class="bg-white border-2 border-indigo-100 rounded-2xl p-6 shadow-sm space-y-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-100 pb-3">
+          <div>
+            <h3 class="text-base font-bold text-gray-900 flex items-center gap-2">
+              <span>🎨</span> Couleurs &amp; Thème de la Boutique
+            </h3>
+            <p class="text-xs text-gray-500 mt-0.5">
+              Personnalisez la couleur des boutons, des onglets, des prix et des titres de votre boutique en direct.
+            </p>
+          </div>
+          <button onclick="saveThemeColors(this)" id="btn-save-colors"
+            class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-5 py-2.5 rounded-xl text-xs shadow-md transition-all flex items-center justify-center gap-2 whitespace-nowrap">
+            <span>💾</span> Enregistrer les couleurs
+          </button>
+        </div>
+
+        <!-- Palettes prédéfinies -->
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-2">
+            Palettes Recommandées (1 clic pour choisir)
+          </label>
+          <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2.5">
+            <button type="button" onclick="selectColorPreset('#ff6469', '#f472b6')" class="p-2.5 rounded-xl border border-gray-200 hover:border-pink-500 transition-all text-left flex items-center gap-2 bg-gray-50 hover:bg-pink-50/50">
+              <span class="w-5 h-5 rounded-full bg-[#ff6469] shadow-sm flex-shrink-0"></span>
+              <span class="text-xs font-semibold text-gray-700">Rose Luxe</span>
+            </button>
+            <button type="button" onclick="selectColorPreset('#D4AF37', '#fde047')" class="p-2.5 rounded-xl border border-gray-200 hover:border-amber-500 transition-all text-left flex items-center gap-2 bg-gray-50 hover:bg-amber-50/50">
+              <span class="w-5 h-5 rounded-full bg-[#D4AF37] shadow-sm flex-shrink-0"></span>
+              <span class="text-xs font-semibold text-gray-700">Or Royal</span>
+            </button>
+            <button type="button" onclick="selectColorPreset('#059669', '#34d399')" class="p-2.5 rounded-xl border border-gray-200 hover:border-emerald-500 transition-all text-left flex items-center gap-2 bg-gray-50 hover:bg-emerald-50/50">
+              <span class="w-5 h-5 rounded-full bg-[#059669] shadow-sm flex-shrink-0"></span>
+              <span class="text-xs font-semibold text-gray-700">Émeraude</span>
+            </button>
+            <button type="button" onclick="selectColorPreset('#2563eb', '#60a5fa')" class="p-2.5 rounded-xl border border-gray-200 hover:border-blue-500 transition-all text-left flex items-center gap-2 bg-gray-50 hover:bg-blue-50/50">
+              <span class="w-5 h-5 rounded-full bg-[#2563eb] shadow-sm flex-shrink-0"></span>
+              <span class="text-xs font-semibold text-gray-700">Bleu Océan</span>
+            </button>
+            <button type="button" onclick="selectColorPreset('#7c3aed', '#a78bfa')" class="p-2.5 rounded-xl border border-gray-200 hover:border-purple-500 transition-all text-left flex items-center gap-2 bg-gray-50 hover:bg-purple-50/50">
+              <span class="w-5 h-5 rounded-full bg-[#7c3aed] shadow-sm flex-shrink-0"></span>
+              <span class="text-xs font-semibold text-gray-700">Violet Prestige</span>
+            </button>
+            <button type="button" onclick="selectColorPreset('#e11d48', '#fb7185')" class="p-2.5 rounded-xl border border-gray-200 hover:border-rose-500 transition-all text-left flex items-center gap-2 bg-gray-50 hover:bg-rose-50/50">
+              <span class="w-5 h-5 rounded-full bg-[#e11d48] shadow-sm flex-shrink-0"></span>
+              <span class="text-xs font-semibold text-gray-700">Rouge Rubis</span>
+            </button>
+            <button type="button" onclick="selectColorPreset('#111827', '#e5e7eb')" class="p-2.5 rounded-xl border border-gray-200 hover:border-gray-900 transition-all text-left flex items-center gap-2 bg-gray-50 hover:bg-gray-100">
+              <span class="w-5 h-5 rounded-full bg-[#111827] shadow-sm flex-shrink-0"></span>
+              <span class="text-xs font-semibold text-gray-700">Noir Élégant</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Sélecteurs personnalisés -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+          <div class="flex items-center gap-3 p-3.5 bg-gray-50 rounded-xl border border-gray-200">
+            <input type="color" id="picker-primary-color" value="#ff6469" oninput="handleCustomColorChange()"
+              class="w-12 h-12 rounded-lg cursor-pointer border-0 bg-transparent">
+            <div>
+              <label class="block text-xs font-bold text-gray-800">Couleur Principale (Boutons &amp; Prix)</label>
+              <span id="label-primary-color" class="text-xs font-mono font-semibold text-pink-600">#ff6469</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 p-3.5 bg-gray-50 rounded-xl border border-gray-200">
+            <input type="color" id="picker-secondary-color" value="#f472b6" oninput="handleCustomColorChange()"
+              class="w-12 h-12 rounded-lg cursor-pointer border-0 bg-transparent">
+            <div>
+              <label class="block text-xs font-bold text-gray-800">Couleur du Titre Bannière &amp; Accents</label>
+              <span id="label-secondary-color" class="text-xs font-mono font-semibold text-pink-600">#f472b6</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION : GESTION DE L'AFFICHAGE DES CATÉGORIES -->
+    <section id="sec-categories" class="bg-white rounded-2xl p-6 shadow-md space-y-6 hidden">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-gray-100">
+        <div>
+          <h2 class="text-xl md:text-2xl font-bold text-gray-900 flex items-center gap-2">
+            <span>👁️</span> Choisir les Catégories Affichées sur le Site
+          </h2>
+          <p class="text-sm text-gray-500 mt-1">
+            Activez ou désactivez les catégories en 1 clic. Les catégories désactivées (ex: Parfums, Sacs...) seront immédiatement masquées de la boutique publique.
+          </p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="saveCategoriesDisplay(this)" id="btn-save-categories"
+            class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-2.5 rounded-xl text-sm shadow-md transition-all flex items-center gap-2">
+            <span>💾</span> Enregistrer l'affichage
+          </button>
+        </div>
+      </div>
+
+      <!-- Liste des Catégories avec Toggles interactifs -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Casquettes -->
+        <div class="border border-gray-200 rounded-2xl p-4 flex items-center justify-between hover:border-pink-300 transition-all bg-gray-50/50">
+          <div class="flex items-center gap-3">
+            <span class="text-3xl">🧢</span>
+            <div>
+              <h4 class="font-bold text-gray-900 text-base">Casquettes</h4>
+              <p class="text-xs text-gray-500">Collection de casquettes de luxe et brodées</p>
+            </div>
+          </div>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="toggle-cat-caps" checked class="sr-only peer" onchange="previewCategoryToggle()">
+            <div class="w-12 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#ff6469]"></div>
+          </label>
+        </div>
+
+        <!-- Sacs & Maroquinerie -->
+        <div class="border border-gray-200 rounded-2xl p-4 flex items-center justify-between hover:border-pink-300 transition-all bg-gray-50/50">
+          <div class="flex items-center gap-3">
+            <span class="text-3xl">👜</span>
+            <div>
+              <h4 class="font-bold text-gray-900 text-base">Sacs &amp; Maroquinerie</h4>
+              <p class="text-xs text-gray-500">Sacs classiques, bandoulières et cuirs de luxe</p>
+            </div>
+          </div>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="toggle-cat-sacs" checked class="sr-only peer" onchange="previewCategoryToggle()">
+            <div class="w-12 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#ff6469]"></div>
+          </label>
+        </div>
+
+        <!-- Parfums -->
+        <div class="border border-gray-200 rounded-2xl p-4 flex items-center justify-between hover:border-pink-300 transition-all bg-gray-50/50">
+          <div class="flex items-center gap-3">
+            <span class="text-3xl">🧴</span>
+            <div>
+              <h4 class="font-bold text-gray-900 text-base">Parfums</h4>
+              <p class="text-xs text-gray-500">Fragrances envoûtantes et collections spéciales</p>
+            </div>
+          </div>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="toggle-cat-parfums" checked class="sr-only peer" onchange="previewCategoryToggle()">
+            <div class="w-12 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#ff6469]"></div>
+          </label>
+        </div>
+
+        <!-- Chaînette & Bijoux -->
+        <div class="border border-gray-200 rounded-2xl p-4 flex items-center justify-between hover:border-pink-300 transition-all bg-gray-50/50">
+          <div class="flex items-center gap-3">
+            <span class="text-3xl">💎</span>
+            <div>
+              <h4 class="font-bold text-gray-900 text-base">Chaînette &amp; Bijoux</h4>
+              <p class="text-xs text-gray-500">Accessoires, chaînettes et bijoux raffinés</p>
+            </div>
+          </div>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="toggle-cat-chainette" checked class="sr-only peer" onchange="previewCategoryToggle()">
+            <div class="w-12 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#ff6469]"></div>
+          </label>
+        </div>
+      </div>
+
+      <!-- Actions rapides : Tout cocher / Décocher -->
+      <div class="flex flex-wrap items-center justify-between gap-3 p-4 bg-gray-50 rounded-xl border border-gray-200">
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="setAllCategories(true)" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 bg-white border border-indigo-200 hover:bg-indigo-50 px-3 py-1.5 rounded-lg shadow-sm transition-all">
+            ✅ Tout activer
+          </button>
+          <button type="button" onclick="setAllCategories(false)" class="text-xs font-bold text-gray-600 hover:text-gray-800 bg-white border border-gray-200 hover:bg-gray-100 px-3 py-1.5 rounded-lg shadow-sm transition-all">
+            ❌ Tout désactiver
+          </button>
+        </div>
+        <p id="cat-status-preview" class="text-xs font-semibold text-emerald-700">
+          4 catégories actuellement visibles sur la boutique
+        </p>
+      </div>
+    </section>
+
     <!-- SECTION 1 : COMMANDES -->
     <section id="sec-orders" class="bg-white rounded-2xl p-4 md:p-6 shadow-md hidden">
-      <h2 class="font-bold text-xl mb-4 text-gray-900">Commandes récentes</h2>
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="font-bold text-xl text-gray-900">Commandes récentes</h2>
+        <button onclick="loadOrders()"
+          class="text-xs font-semibold bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5">
+          <span>🔄</span> Actualiser les commandes
+        </button>
+      </div>
       <div class="overflow-x-auto">
         <table class="w-full text-sm">
           <thead>
@@ -682,8 +975,25 @@
       await loadSettings();
     }
 
+    async function refreshAllDatabase(btn) {
+      const originalText = btn ? btn.innerHTML : '';
+      if (btn) btn.innerHTML = '<span>⏳</span> Actualisation...';
+      try {
+        await fetch('/api/admin/refresh-db').catch(() => null);
+        await Promise.all([loadProducts(false), loadOrders(), loadSettings()]);
+        if (btn) {
+          btn.innerHTML = '<span>✅</span> Base actualisée !';
+          setTimeout(() => { btn.innerHTML = originalText; }, 2000);
+        }
+        showToast('Base de données entièrement actualisée et synchronisée !');
+      } catch (err) {
+        console.error('Erreur actualisation :', err);
+        if (btn) btn.innerHTML = originalText;
+      }
+    }
+
     function switchDashTab(tabName) {
-      ['products', 'orders', 'client', 'settings'].forEach(t => {
+      ['products', 'banner', 'categories', 'orders', 'client', 'settings'].forEach(t => {
         const btn = document.getElementById(`dash-tab-${t}`);
         const sec = document.getElementById(`sec-${t}`);
         if (!btn || !sec) return;
@@ -701,15 +1011,18 @@
     // GESTION DES PRODUITS, STOCKS & ALERTES
     // =========================================================================
 
-    async function loadProducts() {
+    async function loadProducts(forceRefresh = false) {
       try {
-        const res = await fetch('/api/products').catch(() => null);
+        const res = await fetch('/api/products?t=' + Date.now()).catch(() => null);
         if (res && res.ok) {
           const data = await res.json();
           if (data.products && data.products.length > 0) {
             currentProducts = data.products;
             localStorage.setItem('belrose_products', JSON.stringify(currentProducts));
             renderAdminProducts();
+            if (forceRefresh) {
+              showToast('Catalogue actualisé avec succès depuis la base de données !');
+            }
             return;
           }
         }
@@ -828,11 +1141,13 @@
             <td class="py-3 px-4">
               <div class="flex items-center justify-center gap-1.5">
                 <button onclick="quickStockChange('${p.id}', -1)"
-                  class="w-7 h-7 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold flex items-center justify-center text-sm active:scale-95 transition-all">-</button>
-                <input type="number" min="0" value="${stock}" onchange="setStockDirect('${p.id}', this.value)"
-                  class="w-14 text-center py-1 bg-gray-50 rounded-lg font-bold text-sm outline-none focus:ring-2 focus:ring-pink-400 border border-gray-200">
+                  class="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold flex items-center justify-center text-base active:scale-95 transition-all">-</button>
+                <input type="number" min="0" value="${stock}" id="stock-input-${p.id}"
+                  oninput="setStockDirect('${p.id}', this.value)"
+                  onkeydown="if(event.key==='Enter') saveSingleProductStock('${p.id}', document.getElementById('btn-save-stock-${p.id}'))"
+                  class="w-16 text-center py-1 bg-white rounded-lg font-bold text-sm outline-none focus:ring-2 focus:ring-emerald-500 border border-gray-300 shadow-sm">
                 <button onclick="quickStockChange('${p.id}', 1)"
-                  class="w-7 h-7 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold flex items-center justify-center text-sm active:scale-95 transition-all">+</button>
+                  class="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold flex items-center justify-center text-base active:scale-95 transition-all">+</button>
               </div>
             </td>
             <td class="py-3 px-4">
@@ -840,6 +1155,11 @@
             </td>
             <td class="py-3 px-4 text-right">
               <div class="flex items-center justify-end gap-2">
+                <button id="btn-save-stock-${p.id}" onclick="saveSingleProductStock('${p.id}', this)"
+                  class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1.5"
+                  title="Enregistrer ce stock dans la base de données">
+                  <span>💾</span> Enregistrer
+                </button>
                 <button onclick="editProduct('${p.id}')"
                   class="px-3 py-1.5 bg-gray-100 hover:bg-gray-900 hover:text-white text-gray-700 rounded-xl text-xs font-semibold transition-all">
                   ✏️ Modifier
@@ -868,18 +1188,123 @@
       if (idx >= 0) {
         const newStock = Math.max(0, (Number(currentProducts[idx].stock) || 0) + delta);
         currentProducts[idx].stock = newStock;
-        persistProducts();
-        renderAdminProducts();
+        const input = document.getElementById(`stock-input-${id}`);
+        if (input) input.value = newStock;
+        highlightSaveButton(id);
       }
     }
 
     function setStockDirect(id, value) {
       const idx = currentProducts.findIndex(p => p.id === id);
       if (idx >= 0) {
-        currentProducts[idx].stock = Math.max(0, parseInt(value, 10) || 0);
-        persistProducts();
-        renderAdminProducts();
+        const val = Math.max(0, parseInt(value, 10) || 0);
+        currentProducts[idx].stock = val;
+        highlightSaveButton(id);
       }
+    }
+
+    function highlightSaveButton(id) {
+      const btn = document.getElementById(`btn-save-stock-${id}`);
+      if (btn) {
+        btn.className = 'px-3.5 py-1.5 bg-pink-600 hover:bg-pink-700 text-white rounded-xl text-xs font-bold transition-all shadow-md flex items-center gap-1.5 animate-pulse';
+        btn.innerHTML = '<span>💾</span> Sauvegarder !';
+      }
+    }
+
+    async function saveSingleProductStock(id, btn) {
+      const prod = currentProducts.find(p => p.id === id);
+      if (!prod) return;
+
+      const input = document.getElementById(`stock-input-${id}`);
+      if (input) {
+        prod.stock = Math.max(0, parseInt(input.value, 10) || 0);
+      }
+
+      const saveBtn = btn || document.getElementById(`btn-save-stock-${id}`);
+      if (saveBtn) {
+        saveBtn.classList.remove('animate-pulse');
+        saveBtn.innerHTML = '<span>⏳</span> Enregistrement...';
+      }
+
+      try {
+        const res = await fetch('/api/products', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: prod.id, stock: prod.stock })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          localStorage.setItem('belrose_products', JSON.stringify(currentProducts));
+          if (saveBtn) {
+            saveBtn.className = 'px-3.5 py-1.5 bg-green-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1.5';
+            saveBtn.innerHTML = '<span>✅</span> Enregistré !';
+            setTimeout(() => {
+              saveBtn.className = 'px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1.5';
+              saveBtn.innerHTML = '<span>💾</span> Enregistrer';
+            }, 2500);
+          }
+          renderAdminProducts();
+          showToast(`Stock de "${prod.name}" enregistré : ${prod.stock} unités dans la base de données.`);
+        } else {
+          throw new Error(data.error || 'Erreur sauvegarde');
+        }
+      } catch (err) {
+        console.error('Erreur saveSingleProductStock :', err);
+        if (saveBtn) {
+          saveBtn.innerHTML = '<span>💾</span> Enregistrer';
+          saveBtn.className = 'px-3.5 py-1.5 bg-red-600 text-white rounded-xl text-xs font-bold transition-all';
+        }
+        alert('Erreur enregistrement du stock : ' + err.message);
+      }
+    }
+
+    async function saveAllProductsStock(btn) {
+      const originalText = btn ? btn.innerHTML : '';
+      if (btn) btn.innerHTML = '<span>⏳</span> Enregistrement en cours...';
+      try {
+        const res = await fetch('/api/products', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ products: currentProducts })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          localStorage.setItem('belrose_products', JSON.stringify(currentProducts));
+          if (btn) {
+            btn.innerHTML = '<span>✅</span> Tous les stocks sont enregistrés !';
+            btn.className = 'bg-green-700 text-white font-bold px-4 py-2.5 rounded-xl text-sm shadow-md transition-all flex items-center justify-center gap-2';
+            setTimeout(() => {
+              btn.innerHTML = originalText || '<span>💾</span> Enregistrer tous les stocks';
+              btn.className = 'bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2.5 rounded-xl text-sm shadow-md transition-all flex items-center justify-center gap-2';
+            }, 3000);
+          }
+          renderAdminProducts();
+          showToast('Tous les stocks ont été synchronisés et enregistrés dans la base de données !');
+        } else {
+          throw new Error(data.error || 'Erreur sauvegarde');
+        }
+      } catch (err) {
+        console.error(err);
+        if (btn) btn.innerHTML = originalText || '<span>💾</span> Enregistrer tous les stocks';
+        alert('Erreur : ' + err.message);
+      }
+    }
+
+    function showToast(message) {
+      let toast = document.getElementById('admin-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'admin-toast';
+        toast.className = 'fixed bottom-5 right-5 z-50 bg-gray-900 text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 text-sm font-semibold border border-gray-700 transition-all duration-300 transform translate-y-20 opacity-0';
+        document.body.appendChild(toast);
+      }
+      toast.innerHTML = `<span>✨</span> <span>${message}</span>`;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 3500);
     }
 
     function openProductModal(prod = null) {
@@ -1121,6 +1546,356 @@
       loadSiteLogo();
     }
 
+    // =========================================================================
+    // GESTION DE LA PHOTO / BANNIÈRE DU SITE ET PARAMÈTRES
+    // =========================================================================
+
+    let pendingBannerBase64 = null;
+
+    function handleBannerFileSelect(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        pendingBannerBase64 = e.target.result;
+        
+        // Mettre à jour les aperçus immédiatement
+        const preview = document.getElementById('banner-live-preview');
+        if (preview) preview.src = pendingBannerBase64;
+        const logoPreview = document.getElementById('site-logo-preview');
+        if (logoPreview) logoPreview.src = pendingBannerBase64;
+
+        const statusMsg = document.getElementById('banner-status-msg');
+        if (statusMsg) {
+          statusMsg.className = 'text-xs font-semibold py-2.5 px-3.5 rounded-xl bg-amber-100 text-amber-900 block';
+          statusMsg.textContent = '📸 Photo chargée dans l\'aperçu ! Cliquez sur "Enregistrer sur le site" pour l\'appliquer définitivement.';
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function handleSiteLogoUpload(event) {
+      handleBannerFileSelect(event);
+    }
+
+    async function saveNewBanner() {
+      const btn = document.getElementById('btn-save-banner');
+      const statusMsg = document.getElementById('banner-status-msg');
+
+      if (!pendingBannerBase64) {
+        if (statusMsg) {
+          statusMsg.className = 'text-xs font-semibold py-2.5 px-3.5 rounded-xl bg-blue-100 text-blue-900 block';
+          statusMsg.textContent = 'ℹ️ Veuillez d\'abord choisir une image sur votre ordinateur.';
+        }
+        return;
+      }
+
+      if (btn) btn.innerHTML = '<span>⏳</span> Enregistrement en cours...';
+
+      try {
+        const res = await fetch('/api/admin/settings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ bannerBase64: pendingBannerBase64 })
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success) {
+          const newUrl = data.settings.bannerUrl;
+          localStorage.setItem('belrose_site_banner', newUrl);
+          localStorage.setItem('belrose_site_logo', newUrl);
+
+          if (statusMsg) {
+            statusMsg.className = 'text-xs font-semibold py-2.5 px-3.5 rounded-xl bg-emerald-100 text-emerald-900 block';
+            statusMsg.textContent = '✅ Photo principale enregistrée ! La boutique a été mise à jour.';
+          }
+          if (btn) btn.innerHTML = '<span>✅</span> Photo enregistrée !';
+          setTimeout(() => {
+            if (btn) btn.innerHTML = '<span>💾</span> Enregistrer sur le site';
+          }, 3000);
+        } else {
+          throw new Error(data.error || 'Erreur lors de la sauvegarde');
+        }
+      } catch (err) {
+        console.error('Erreur saveNewBanner :', err);
+        if (statusMsg) {
+          statusMsg.className = 'text-xs font-semibold py-2.5 px-3.5 rounded-xl bg-red-100 text-red-900 block';
+          statusMsg.textContent = '❌ Erreur : ' + err.message;
+        }
+        if (btn) btn.innerHTML = '<span>💾</span> Enregistrer sur le site';
+      }
+    }
+
+    async function resetDefaultBanner() {
+      if (!confirm('Voulez-vous rétablir la photo par défaut du site ?')) return;
+      const statusMsg = document.getElementById('banner-status-msg');
+      try {
+        const res = await fetch('/api/admin/settings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ bannerUrl: 'assets/BARNNIERED.PNG' })
+        });
+        localStorage.removeItem('belrose_site_banner');
+        localStorage.removeItem('belrose_site_logo');
+        pendingBannerBase64 = null;
+        document.getElementById('banner-live-preview').src = 'assets/BARNNIERED.PNG';
+        document.getElementById('site-logo-preview').src = 'assets/BARNNIERED.PNG';
+        if (statusMsg) {
+          statusMsg.className = 'text-xs font-semibold py-2.5 px-3.5 rounded-xl bg-blue-100 text-blue-900 block';
+          statusMsg.textContent = '🔄 Photo d\'origine rétablie avec succès.';
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    function resetSiteLogo() {
+      resetDefaultBanner();
+    }
+
+    function updateStoreNameLive(val) {
+      const titleEl = document.getElementById('banner-preview-title');
+      if (titleEl) {
+        titleEl.textContent = val.trim() || 'BELROSE WALLY';
+      }
+      const generalNameInput = document.getElementById('set-store-name');
+      if (generalNameInput && generalNameInput.value !== val) {
+        generalNameInput.value = val;
+      }
+    }
+
+    async function saveStoreNameDirect(btn) {
+      const input = document.getElementById('set-store-name-banner');
+      const storeName = input ? input.value.trim() : '';
+      if (!storeName) {
+        showToast('Veuillez saisir un nom pour la boutique');
+        return;
+      }
+      const originalHtml = btn ? btn.innerHTML : '';
+      if (btn) btn.innerHTML = '<span>⏳</span> Enregistrement...';
+      try {
+        const res = await fetch('/api/admin/settings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ storeName })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (res.ok && data.success) {
+          localStorage.setItem('belrose_store_name', storeName);
+          document.title = `${storeName} - Administration`;
+          showToast('✅ Nom de la boutique enregistré avec succès !');
+          if (btn) {
+            btn.innerHTML = '<span>✅</span> Enregistré !';
+            setTimeout(() => { btn.innerHTML = originalHtml; }, 2500);
+          }
+        } else {
+          throw new Error(data.error || 'Erreur lors de la sauvegarde');
+        }
+      } catch (err) {
+        console.error('Erreur saveStoreNameDirect :', err);
+        showToast('❌ Erreur : ' + err.message);
+        if (btn) btn.innerHTML = originalHtml;
+      }
+    }
+
+    function selectColorPreset(primary, secondary) {
+      const pInput = document.getElementById('picker-primary-color');
+      const sInput = document.getElementById('picker-secondary-color');
+      if (pInput) pInput.value = primary;
+      if (sInput) sInput.value = secondary;
+      handleCustomColorChange();
+      showToast(`Palette sélectionnée : ${primary} / ${secondary}`);
+    }
+
+    function handleCustomColorChange() {
+      const pInput = document.getElementById('picker-primary-color');
+      const sInput = document.getElementById('picker-secondary-color');
+      const pLabel = document.getElementById('label-primary-color');
+      const sLabel = document.getElementById('label-secondary-color');
+      const titlePreview = document.getElementById('banner-preview-title');
+
+      const primary = pInput ? pInput.value : '#ff6469';
+      const secondary = sInput ? sInput.value : '#f472b6';
+
+      if (pLabel) {
+        pLabel.textContent = primary;
+        pLabel.style.color = primary;
+      }
+      if (sLabel) {
+        sLabel.textContent = secondary;
+        sLabel.style.color = secondary;
+      }
+      if (titlePreview) {
+        titlePreview.style.color = secondary;
+      }
+    }
+
+    async function saveThemeColors(btn) {
+      const pInput = document.getElementById('picker-primary-color');
+      const sInput = document.getElementById('picker-secondary-color');
+      const primaryColor = pInput ? pInput.value : '#ff6469';
+      const secondaryColor = sInput ? sInput.value : '#f472b6';
+
+      const originalHtml = btn ? btn.innerHTML : '';
+      if (btn) btn.innerHTML = '<span>⏳</span> Application...';
+
+      try {
+        const res = await fetch('/api/admin/settings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ primaryColor, secondaryColor })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (res.ok && data.success) {
+          localStorage.setItem('belrose_theme_colors', JSON.stringify({ primaryColor, secondaryColor }));
+          localStorage.setItem('belrose_primary_color', primaryColor);
+          localStorage.setItem('belrose_secondary_color', secondaryColor);
+          showToast('🎨 Nouvelles couleurs de la boutique enregistrées avec succès !');
+          if (btn) {
+            btn.innerHTML = '<span>✅</span> Couleurs appliquées !';
+            setTimeout(() => { btn.innerHTML = originalHtml; }, 2500);
+          }
+        } else {
+          throw new Error(data.error || 'Erreur lors de la sauvegarde des couleurs');
+        }
+      } catch (err) {
+        console.error('Erreur saveThemeColors :', err);
+        showToast('❌ Erreur : ' + err.message);
+        if (btn) btn.innerHTML = originalHtml;
+      }
+    }
+
+    async function loadSettings() {
+      try {
+        const res = await fetch('/api/admin/settings');
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.settings) {
+            const s = data.settings;
+            if (s.bannerUrl) {
+              const prev = document.getElementById('banner-live-preview');
+              if (prev) prev.src = s.bannerUrl;
+              const logoPrev = document.getElementById('site-logo-preview');
+              if (logoPrev) logoPrev.src = s.bannerUrl;
+              localStorage.setItem('belrose_site_banner', s.bannerUrl);
+            }
+            if (s.storeName) {
+              const bInput = document.getElementById('set-store-name-banner');
+              if (bInput) bInput.value = s.storeName;
+              const gInput = document.getElementById('set-store-name');
+              if (gInput) gInput.value = s.storeName;
+              const titleEl = document.getElementById('banner-preview-title');
+              if (titleEl) titleEl.textContent = s.storeName;
+              localStorage.setItem('belrose_store_name', s.storeName);
+            }
+            if (s.primaryColor || s.secondaryColor) {
+              const p = s.primaryColor || '#ff6469';
+              const sec = s.secondaryColor || '#f472b6';
+              const pInput = document.getElementById('picker-primary-color');
+              const sInput = document.getElementById('picker-secondary-color');
+              if (pInput) pInput.value = p;
+              if (sInput) sInput.value = sec;
+              handleCustomColorChange();
+              localStorage.setItem('belrose_theme_colors', JSON.stringify({ primaryColor: p, secondaryColor: sec }));
+              localStorage.setItem('belrose_primary_color', p);
+              localStorage.setItem('belrose_secondary_color', sec);
+            }
+            if (s.city && document.getElementById('set-city')) {
+              document.getElementById('set-city').value = s.city;
+            }
+            if (s.whatsappPhone && document.getElementById('set-whatsapp')) {
+              document.getElementById('set-whatsapp').value = s.whatsappPhone;
+            }
+            if (s.notifyEmail && document.getElementById('set-notify-email')) {
+              document.getElementById('set-notify-email').value = s.notifyEmail;
+            }
+            if (Array.isArray(s.activeCategories)) {
+              updateCategoryTogglesUI(s.activeCategories);
+              localStorage.setItem('belrose_active_categories', JSON.stringify(s.activeCategories));
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Erreur chargement paramètres :', err);
+      }
+    }
+
+    function updateCategoryTogglesUI(activeCats) {
+      const caps = document.getElementById('toggle-cat-caps');
+      const sacs = document.getElementById('toggle-cat-sacs');
+      const parfums = document.getElementById('toggle-cat-parfums');
+      const chainette = document.getElementById('toggle-cat-chainette');
+
+      if (caps) caps.checked = activeCats.includes('caps');
+      if (sacs) sacs.checked = activeCats.includes('sacs');
+      if (parfums) parfums.checked = activeCats.includes('parfums');
+      if (chainette) chainette.checked = activeCats.includes('chaînette & bijoux');
+
+      previewCategoryToggle();
+    }
+
+    function previewCategoryToggle() {
+      const activeCats = getSelectedCategoryKeys();
+      const statusEl = document.getElementById('cat-status-preview');
+      if (statusEl) {
+        if (activeCats.length === 0) {
+          statusEl.textContent = '⚠️ Aucune catégorie sélectionnée (le site affichera un message vide)';
+          statusEl.className = 'text-xs font-semibold text-amber-700';
+        } else {
+          statusEl.textContent = `${activeCats.length} catégorie(s) sélectionnée(s) pour affichage sur le site`;
+          statusEl.className = 'text-xs font-semibold text-emerald-700';
+        }
+      }
+    }
+
+    function getSelectedCategoryKeys() {
+      const activeCats = [];
+      if (document.getElementById('toggle-cat-caps')?.checked) activeCats.push('caps');
+      if (document.getElementById('toggle-cat-sacs')?.checked) activeCats.push('sacs');
+      if (document.getElementById('toggle-cat-parfums')?.checked) activeCats.push('parfums');
+      if (document.getElementById('toggle-cat-chainette')?.checked) activeCats.push('chaînette & bijoux');
+      return activeCats;
+    }
+
+    function setAllCategories(enableAll) {
+      ['toggle-cat-caps', 'toggle-cat-sacs', 'toggle-cat-parfums', 'toggle-cat-chainette'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.checked = enableAll;
+      });
+      previewCategoryToggle();
+    }
+
+    async function saveCategoriesDisplay(btn) {
+      const activeCategories = getSelectedCategoryKeys();
+      const originalHtml = btn ? btn.innerHTML : '';
+      if (btn) btn.innerHTML = '<span>⏳</span> Enregistrement...';
+
+      try {
+        const res = await fetch('/api/admin/settings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ activeCategories })
+        });
+        const data = await res.json().catch(() => ({}));
+
+        if (res.ok && data.success) {
+          localStorage.setItem('belrose_active_categories', JSON.stringify(activeCategories));
+          showToast(`✅ Affichage mis à jour : ${activeCategories.length} catégorie(s) actives sur la boutique !`);
+          if (btn) {
+            btn.innerHTML = '<span>✅</span> Enregistré !';
+            setTimeout(() => { btn.innerHTML = originalHtml; }, 2500);
+          }
+        } else {
+          throw new Error(data.error || 'Erreur lors de la sauvegarde');
+        }
+      } catch (err) {
+        console.error('Erreur saveCategoriesDisplay :', err);
+        showToast('❌ Erreur : ' + err.message);
+        if (btn) btn.innerHTML = originalHtml;
+      }
+    }
+
     async function saveSettings() {
       const storeName = document.getElementById('set-store-name').value.trim();
       const city = document.getElementById('set-city').value.trim();
@@ -1128,62 +1903,28 @@
       const whatsappPhone = document.getElementById('set-whatsapp').value.trim();
       const msgEl = document.getElementById('settings-msg');
 
-      // Sauvegarder le logo en localStorage si modifié
-      const logo = document.getElementById('site-logo-preview').src;
-      if (logo && logo.startsWith('data:')) {
-        localStorage.setItem('belrose_site_logo', logo);
-      }
-
       try {
+        const payload = { storeName, city, notifyEmail, whatsappPhone };
+        if (pendingBannerBase64) {
+          payload.bannerBase64 = pendingBannerBase64;
+        }
+
         const res = await fetch('/api/admin/settings', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ storeName, city, notifyEmail, whatsappPhone })
+          body: JSON.stringify(payload)
         });
+
         if (res.ok) {
-          msgEl.textContent = 'Paramètres enregistrés avec succès !';
+          msgEl.textContent = '✅ Paramètres enregistrés avec succès !';
           msgEl.className = 'text-sm mt-2 text-green-700 font-bold';
         } else {
-          msgEl.textContent = 'Erreur lors de la sauvegarde.';
+          msgEl.textContent = '❌ Erreur lors de la sauvegarde.';
           msgEl.className = 'text-sm mt-2 text-red-600 font-semibold';
         }
       } catch (err) {
         msgEl.textContent = 'Paramètres sauvegardés localement ✓';
         msgEl.className = 'text-sm mt-2 text-green-700 font-bold';
-      }
-    }
-
-    function handleSiteLogoUpload(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const preview = document.getElementById('site-logo-preview');
-        preview.src = e.target.result;
-        // Appliquer aussi sur la boutique en temps réel si elle est ouverte
-        localStorage.setItem('belrose_site_logo', e.target.result);
-        applyLogoToShop(e.target.result);
-      };
-      reader.readAsDataURL(file);
-    }
-
-    function resetSiteLogo() {
-      if (!confirm('Réinitialiser la photo par défaut ?')) return;
-      localStorage.removeItem('belrose_site_logo');
-      document.getElementById('site-logo-preview').src = 'assets/BARNNIERED.PNG';
-      applyLogoToShop(null);
-    }
-
-    function applyLogoToShop(logoUrl) {
-      // Applique dans la même fenêtre si la boutique est chargée dans un iframe
-      const shopBanner = document.querySelector('#shop-banner-img');
-      if (shopBanner) shopBanner.src = logoUrl || 'assets/BARNNIERED.PNG';
-    }
-
-    function loadSiteLogo() {
-      const saved = localStorage.getItem('belrose_site_logo');
-      if (saved) {
-        document.getElementById('site-logo-preview').src = saved;
       }
     }
 

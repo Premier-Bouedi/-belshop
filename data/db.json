@@ -1,0 +1,191 @@
+{
+  "products": [
+    {
+      "id": "c1",
+      "category": "caps",
+      "name": "CASQUETTE NOIR",
+      "desc": "Casquette élégante brodée avec filet de ventilation",
+      "price": 15000,
+      "stock": 12,
+      "alertThreshold": 3,
+      "img": "assets/casquette (1).png",
+      "created_at": "2026-10-30T03:36:22.608Z"
+    },
+    {
+      "id": "c2",
+      "category": "caps",
+      "name": "CASQUETTE HERMÈS STYLE",
+      "desc": "Finition haute qualité édition spéciale",
+      "price": 18000,
+      "stock": 4,
+      "alertThreshold": 3,
+      "img": "assets/casquette (2).png",
+      "created_at": "2026-10-30T03:36:22.608Z"
+    },
+    {
+      "id": "c3",
+      "category": "caps",
+      "name": "CASQUETTE LUXE",
+      "desc": "Tissu respirant et ajustement parfait",
+      "price": 15000,
+      "stock": 2,
+      "alertThreshold": 3,
+      "img": "assets/casquette (3).png",
+      "created_at": "2026-10-30T03:36:22.608Z"
+    },
+    {
+      "id": "c4",
+      "category": "caps",
+      "name": "CASQUETTE PRESTIGE",
+      "desc": "Édition limitée confort optimal",
+      "price": 15000,
+      "stock": 0,
+      "alertThreshold": 3,
+      "img": "assets/casquette (4).png",
+      "created_at": "2026-10-30T03:36:22.608Z"
+    },
+    {
+      "id": "s1",
+      "category": "sacs",
+      "name": "Sac Classic",
+      "desc": "Sac à bandoulière en cuir avec finition dorée",
+      "price": 45000,
+      "stock": 8,
+      "alertThreshold": 3,
+      "img": "assets/sac 1 (1).png",
+      "created_at": "2026-10-30T03:36:22.608Z"
+    },
+    {
+      "id": "s2",
+      "category": "sacs",
+      "name": "Sac Seared Saffron",
+      "desc": "Modèle compact haut de gamme pour soirées",
+      "price": 40000,
+      "stock": 5,
+      "alertThreshold": 3,
+      "img": "assets/sac 1 (2).png",
+      "created_at": "2026-10-30T03:36:22.608Z"
+    },
+    {
+      "id": "s3",
+      "category": "sacs",
+      "name": "Green Garden Bag",
+      "desc": "Collection prestige édition limitée",
+      "price": 50000,
+      "stock": 1,
+      "alertThreshold": 3,
+      "img": "assets/sac 1 (3).png",
+      "created_at": "2026-10-30T03:36:22.608Z"
+    },
+    {
+      "id": "p1",
+      "category": "parfums",
+      "name": "Parfum Belrose Eau De Parfum",
+      "desc": "Senteur florale et envoûtante 100ml",
+      "price": 35000,
+      "stock": 15,
+      "alertThreshold": 3,
+      "img": "assets/parfuns 3.png",
+      "created_at": "2026-10-30T03:36:22.608Z"
+    },
+    {
+      "id": "p2",
+      "category": "parfums",
+      "name": "Parfum Belrose Collection",
+      "desc": "Senteur raffinée pour les occasions spéciales",
+      "price": 40000,
+      "stock": 10,
+      "alertThreshold": 3,
+      "img": "assets/parfuns.png",
+      "created_at": "2026-10-30T03:36:22.608Z"
+    }
+  ],
+  "orders": [
+    {
+      "id": 1,
+      "client_name": "Marc Nguema",
+      "client_phone": "+241 77 12 34 56",
+      "client_address": "Libreville, Quartier Glass",
+      "items": [
+        {
+          "id": "c2",
+          "name": "CASQUETTE HERMÈS STYLE",
+          "price": 18000,
+          "qty": 1
+        }
+      ],
+      "total": 18000,
+      "payment_method": "Paiement à la livraison",
+      "status": "en_attente",
+      "created_at": "2026-10-30T01:36:22.608Z"
+    },
+    {
+      "id": 2,
+      "client_name": "Sarah Biyogo",
+      "client_phone": "+241 66 98 76 54",
+      "client_address": "Libreville, Louis",
+      "items": [
+        {
+          "id": "s1",
+          "name": "Sac Classic",
+          "price": 45000,
+          "qty": 1
+        }
+      ],
+      "total": 45000,
+      "payment_method": "Paiement à la livraison",
+      "status": "confirmee",
+      "created_at": "2026-10-29T03:36:22.608Z"
+    },
+    {
+      "id": 3,
+      "client_name": "Franck Obame",
+      "client_phone": "+241 74 11 22 33",
+      "client_address": "Libreville, Akébé Plaine",
+      "items": [
+        {
+          "id": "p1",
+          "name": "Parfum Belrose Eau De Parfum",
+          "price": 35000,
+          "qty": 1
+        }
+      ],
+      "total": 35000,
+      "payment_method": "Paiement à la livraison",
+      "status": "livree",
+      "created_at": "2026-10-28T03:36:22.608Z"
+    }
+  ],
+  "clients": [
+    {
+      "id": 1,
+      "name": "Marc Nguema",
+      "phone": "+241 77 12 34 56",
+      "email": "marc.nguema@gmail.com",
+      "address": "Libreville, Glass",
+      "source": "en_ligne",
+      "notes": "Client régulier",
+      "created_at": "2026-10-30T03:36:22.608Z"
+    },
+    {
+      "id": 2,
+      "name": "Sarah Biyogo",
+      "phone": "+241 66 98 76 54",
+      "email": "sarah.b@gmail.com",
+      "address": "Libreville, Louis",
+      "source": "en_ligne",
+      "notes": "",
+      "created_at": "2026-10-30T03:36:22.608Z"
+    },
+    {
+      "id": 3,
+      "name": "Franck Obame",
+      "phone": "+241 74 11 22 33",
+      "email": "franck.o@gmail.com",
+      "address": "Libreville, Akébé",
+      "source": "manuel",
+      "notes": "Visite boutique physique",
+      "created_at": "2026-10-30T03:36:22.608Z"
+    }
+  ]
+}

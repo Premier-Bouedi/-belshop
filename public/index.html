@@ -14,7 +14,7 @@
     <style>
         :root {
             --primary: #ff6469;
-            --primary-hover: #ff6469;
+            --primary-hover: #e05257;
             --dark: #1A1A2E;
             --stone: #4A4A5A;
             --bg-light: #F7F6F3;
@@ -54,7 +54,7 @@
             box-shadow: 0 16px 32px rgba(0, 0, 0, 0.1);
         }
 
-        /* Toast de notification (remplace les alert() bloquantes) */
+        /* Toast Notification */
         #toast {
             position: fixed;
             bottom: 20px;
@@ -121,8 +121,7 @@
         class="w-full relative overflow-hidden bg-black text-white py-12 px-4 text-center flex flex-col items-center justify-center min-h-[50vh]">
         <img id="shop-banner-img" src="assets/BARNNIERED.PNG" alt="BELROSE WALLY BANNER"
             class="absolute inset-0 w-full h-full object-cover opacity-60" onerror="this.src='assets/affiche.png'">
-        <div class="relative z-10 max-w-4xl mx-auto">
-            <h1 class="font-display text-5xl md:text-7xl font-extrabold tracking-wide drop-shadow-md text-pink-400">
+            <h1 id="shop-title" class="font-display text-5xl md:text-7xl font-extrabold tracking-wide drop-shadow-md text-pink-400">
                 BELROSE WALLY
             </h1>
             <p class="text-xl md:text-2xl mt-2 tracking-widest font-bold uppercase text-white">SHOP.</p>
@@ -142,6 +141,8 @@
                 onclick="switchCategory('sacs', event)">Sacs & Maroquinerie</button>
             <button class="category-tab px-6 py-2.5 rounded-full text-sm font-semibold" data-cat="parfums"
                 onclick="switchCategory('parfums', event)">Parfums</button>
+        <button class="category-tab px-6 py-2.5 rounded-full text-sm font-semibold" data-cat="chaînette & bijoux"
+            onclick="switchCategory('chaînette & bijoux', event)">Chaînette & Bijoux</button>
         </nav>
 
         <section id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></section>
@@ -182,12 +183,21 @@
 
     <div id="toast"></div>
 
+    <!-- BOUTON WHATSAPP FLOTTANT -->
+    <a id="whatsapp-float-btn" href="#" target="_blank" rel="noopener noreferrer" onclick="openWhatsAppChat(event)"
+        class="fixed bottom-6 left-6 z-50 flex items-center gap-2 bg-[#25D366] hover:bg-[#1ebe5d] text-white font-bold px-4 py-3 rounded-full shadow-2xl transition-all hover:scale-105 active:scale-95">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-white" viewBox="0 0 24 24">
+            <path
+                d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+            <path
+                d="M12 0C5.373 0 0 5.373 0 12c0 2.117.553 4.103 1.52 5.833L.057 23.428l5.77-1.513A11.946 11.946 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.007-1.373l-.36-.214-3.724.976.993-3.635-.235-.374A9.818 9.818 0 1112 21.818z" />
+        </svg>
+        <span>WhatsApp</span>
+    </a>
+
     <script>
-        // -------------------------------------------------------------------------
-        // Catalogue produit (à terme, ces données peuvent venir d'une table Supabase
-        // "products" servie par une route /api/products — ici en dur pour la démo).
-        // Aucune donnée sensible n'est manipulée dans ce fichier.
-        // -------------------------------------------------------------------------
+        const WHATSAPP_PHONE_NUMBER = "24100000000"; // Remplacer par le numéro de téléphone officiel avec indicatif (ex: 241...)
+
         let products = {
             caps: [
                 { id: 'c1', category: 'caps', name: 'CASQUETTE NOIR', desc: 'Casquette élégante brodée avec filet de ventilation', price: 15000, stock: 12, img: 'assets/casquette (1).png' },
@@ -203,18 +213,62 @@
             parfums: [
                 { id: 'p1', category: 'parfums', name: 'Parfum Belrose Eau De Parfum', desc: 'Senteur florale et envoûtante 100ml', price: 35000, stock: 15, img: 'assets/parfuns 3.png' },
                 { id: 'p2', category: 'parfums', name: 'Parfum Belrose Collection', desc: 'Senteur raffinée pour les occasions spéciales', price: 40000, stock: 10, img: 'assets/parfuns.png' }
+            ],
+            'chaînette & bijoux': [
+                { id: 'c1', category: 'chaînette & bijoux', name: 'CHAÎNETTE & BIJOUX', desc: 'Chaînette & Bijoux', price: 15000, stock: 12, img: 'assets/chaînette.png' }
             ]
-        };
+        };      
 
+        const ALL_CATEGORIES_CONFIG = [
+            { key: 'caps', label: 'Casquettes' },
+            { key: 'sacs', label: 'Sacs & Maroquinerie' },
+            { key: 'parfums', label: 'Parfums' },
+            { key: 'chaînette & bijoux', label: 'Chaînette & Bijoux' }
+        ];
+
+        let activeCategoryKeys = ['caps', 'sacs', 'parfums', 'chaînette & bijoux'];
         let cart = [];
         let currentCategory = 'caps';
+
+        function renderCategoryTabs() {
+            const nav = document.getElementById('category-tabs');
+            if (!nav) return;
+
+            // Filtrer les catégories actives
+            const visibleCats = ALL_CATEGORIES_CONFIG.filter(c => activeCategoryKeys.includes(c.key));
+            
+            // Si la catégorie actuelle est inactive, basculer sur la première disponible
+            if (!activeCategoryKeys.includes(currentCategory)) {
+                currentCategory = visibleCats.length > 0 ? visibleCats[0].key : '';
+            }
+
+            if (visibleCats.length === 0) {
+                nav.innerHTML = '<p class="text-sm text-gray-500 italic py-2">Aucune catégorie active.</p>';
+                renderProducts();
+                return;
+            }
+
+            nav.innerHTML = visibleCats.map(c => `
+                <button class="category-tab ${c.key === currentCategory ? 'active' : ''} px-6 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all"
+                    data-cat="${c.key}" onclick="switchCategory('${c.key}', event)">
+                    ${c.label}
+                </button>
+            `).join('');
+
+            // Réappliquer les couleurs dynamiques sur les tabs
+            const p = localStorage.getItem('belrose_primary_color');
+            const s = localStorage.getItem('belrose_secondary_color');
+            if (p) applyThemeColors(p, s);
+
+            renderProducts();
+        }
 
         function renderProducts() {
             const grid = document.getElementById('product-grid');
             grid.innerHTML = '';
-            
-            if (!products[currentCategory] || products[currentCategory].length === 0) {
-                grid.innerHTML = '<p class="text-gray-500 italic col-span-full text-center">Aucun produit dans cette catégorie.</p>';
+
+            if (!currentCategory || !activeCategoryKeys.includes(currentCategory) || !products[currentCategory] || products[currentCategory].length === 0) {
+                grid.innerHTML = '<p class="text-gray-500 italic col-span-full text-center py-10">Aucun produit disponible dans cette catégorie.</p>';
                 return;
             }
 
@@ -225,7 +279,7 @@
                 const badgeHTML = isOutOfStock
                     ? '<div class="absolute top-4 right-4 bg-red-600 text-white text-[10px] font-extrabold px-3 py-1 rounded-full shadow-lg z-10 uppercase tracking-widest border border-white/20 backdrop-blur-sm">Rupture</div>'
                     : '';
-                
+
                 const buttonHTML = isOutOfStock
                     ? `<button disabled class="bg-gray-200 text-gray-400 font-bold px-4 py-2 rounded-xl text-sm flex items-center gap-1 cursor-not-allowed">
                          Épuisé
@@ -235,29 +289,31 @@
                        </button>`;
 
                 grid.insertAdjacentHTML('beforeend', `
-          <div class="product-card group bg-white rounded-2xl overflow-hidden flex flex-col shadow-md hover:shadow-xl transition-all duration-300 relative ${isOutOfStock ? 'opacity-70 grayscale-[20%]' : ''}">
-            ${badgeHTML}
-            <div class="w-full h-52 sm:h-60 bg-[#FAF9F6] p-4 flex items-center justify-center overflow-hidden relative">
-              <img src="${item.img}" alt="${item.name}" class="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-105 drop-shadow ${isOutOfStock ? 'opacity-60' : ''}">
-            </div>
-            <div class="p-5 flex flex-col flex-1">
-              <h3 class="font-bold text-lg text-gray-900">${item.name}</h3>
-              <p class="text-sm text-gray-500 mb-4 flex-1">${item.desc}</p>
-              <div class="flex justify-between items-center mt-auto pt-2">
-                <span class="font-bold text-lg text-gray-900">${Number(item.price).toLocaleString('fr-FR')} FCFA</span>
-                ${buttonHTML}
-              </div>
-            </div>
-          </div>
-        `);
+                    <div class="product-card group bg-white rounded-2xl overflow-hidden flex flex-col shadow-md hover:shadow-xl transition-all duration-300 relative ${isOutOfStock ? 'opacity-70 grayscale-[20%]' : ''}">
+                        ${badgeHTML}
+                        <div class="w-full h-52 sm:h-60 bg-[#FAF9F6] p-4 flex items-center justify-center overflow-hidden relative">
+                            <img src="${item.img}" alt="${item.name}" class="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-105 drop-shadow ${isOutOfStock ? 'opacity-60' : ''}">
+                        </div>
+                        <div class="p-5 flex flex-col flex-1">
+                            <h3 class="font-bold text-lg text-gray-900">${item.name}</h3>
+                            <p class="text-sm text-gray-500 mb-4 flex-1">${item.desc}</p>
+                            <div class="flex justify-between items-center mt-auto pt-2">
+                                <span class="font-bold text-lg text-gray-900">${Number(item.price).toLocaleString('fr-FR')} FCFA</span>
+                                ${buttonHTML}
+                            </div>
+                        </div>
+                    </div>
+                `);
             });
+
             if (window.lucide) lucide.createIcons();
         }
 
         function switchCategory(cat, evt) {
             currentCategory = cat;
             document.querySelectorAll('.category-tab').forEach(btn => btn.classList.remove('active'));
-            (evt ? evt.currentTarget : document.querySelector(`[data-cat="${cat}"]`)).classList.add('active');
+            const activeBtn = evt ? evt.currentTarget : document.querySelector(`[data-cat="${cat}"]`);
+            if (activeBtn) activeBtn.classList.add('active');
             renderProducts();
         }
 
@@ -311,24 +367,24 @@
                 totalItems += item.qty;
 
                 cartContainer.insertAdjacentHTML('beforeend', `
-          <div class="flex items-center justify-between border-b pb-2">
-            <div>
-              <p class="font-bold text-sm">${item.name}</p>
-              <p class="text-xs text-gray-500">${item.price.toLocaleString('fr-FR')} FCFA x ${item.qty}</p>
-            </div>
-            <div class="flex items-center gap-2">
-              <span class="font-bold text-sm">${itemTotal.toLocaleString('fr-FR')} FCFA</span>
-              <button onclick="removeFromCart(${index})" class="text-red-500 hover:text-red-700">
-                <i data-lucide="trash-2" class="w-4 h-4"></i>
-              </button>
-            </div>
-          </div>
-        `);
+                    <div class="flex items-center justify-between border-b pb-2">
+                        <div>
+                            <p class="font-bold text-sm">${item.name}</p>
+                            <p class="text-xs text-gray-500">${item.price.toLocaleString('fr-FR')} FCFA x ${item.qty}</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-sm">${itemTotal.toLocaleString('fr-FR')} FCFA</span>
+                            <button onclick="removeFromCart(${index})" class="text-red-500 hover:text-red-700">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                `);
             });
 
             countEl.textContent = totalItems;
             totalEl.textContent = `${total.toLocaleString('fr-FR')} FCFA`;
-            lucide.createIcons();
+            if (window.lucide) lucide.createIcons();
         }
 
         function removeFromCart(index) {
@@ -398,6 +454,18 @@
             }
         }
 
+        function openWhatsAppChat(evt) {
+            evt.preventDefault();
+            let msg = "Bonjour BELROSE WALLY, je souhaite avoir des informations sur vos produits.";
+            if (cart.length > 0) {
+                const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+                const itemsText = cart.map(i => `- ${i.name} (x${i.qty})`).join('\n');
+                msg = `Bonjour BELROSE WALLY, je souhaite passer la commande suivante :\n${itemsText}\nTotal: ${total.toLocaleString('fr-FR')} FCFA`;
+            }
+            const url = `https://wa.me/${WHATSAPP_PHONE_NUMBER}?text=${encodeURIComponent(msg)}`;
+            window.open(url, '_blank');
+        }
+
         function scrollToCatalog() {
             document.getElementById('category-tabs').scrollIntoView({ behavior: 'smooth' });
         }
@@ -408,13 +476,13 @@
                 if (res.ok) {
                     const data = await res.json();
                     if (data.products && data.products.length > 0) {
-                        const grouped = { caps: [], sacs: [], parfums: [] };
+                        const grouped = { caps: [], sacs: [], parfums: [], 'chaînette & bijoux': [] };
                         data.products.forEach(p => {
                             if (!grouped[p.category]) grouped[p.category] = [];
                             grouped[p.category].push(p);
                         });
                         products = grouped;
-                        renderProducts();
+                        renderCategoryTabs();
                     }
                 }
             } catch (err) {
@@ -422,20 +490,132 @@
             }
         }
 
-        // Rendu initial (fallback)
-        renderProducts();
-        
-        // Chargement temps réel
+        // Execution initiale
+        renderCategoryTabs();
         fetchRealTimeProducts();
 
-        // Charger le logo personnalisé depuis l'administration
-        (function loadCustomLogo() {
-            const saved = localStorage.getItem('belrose_site_logo');
-            if (saved) {
-                const bannerImg = document.getElementById('shop-banner-img');
-                if (bannerImg) bannerImg.src = saved;
+        function applyThemeColors(primary, secondary) {
+            if (!primary) primary = '#ff6469';
+            if (!secondary) secondary = '#f472b6';
+
+            document.documentElement.style.setProperty('--primary', primary);
+            document.documentElement.style.setProperty('--secondary', secondary);
+
+            let styleEl = document.getElementById('dynamic-theme-style');
+            if (!styleEl) {
+                styleEl = document.createElement('style');
+                styleEl.id = 'dynamic-theme-style';
+                document.head.appendChild(styleEl);
             }
-        })();
+            styleEl.innerHTML = `
+                :root {
+                    --primary: ${primary};
+                    --secondary: ${secondary};
+                }
+                .bg-\\[\\#ff6469\\], .category-tab.active, #floating-cart-btn, button[onclick="scrollToCatalog()"], button[onclick*="confirmOrder"] {
+                    background-color: ${primary} !important;
+                }
+                .text-\\[\\#ff6469\\] {
+                    color: ${primary} !important;
+                }
+                #shop-title {
+                    color: ${secondary} !important;
+                }
+                .border-\\[\\#ff6469\\] {
+                    border-color: ${primary} !important;
+                }
+            `;
+        }
+
+        async function fetchSiteSettings() {
+            const bannerImg = document.getElementById('shop-banner-img');
+            const shopTitle = document.getElementById('shop-title');
+
+            // 1. Chargement immédiat du cache pour affichage instantané
+            const cachedBanner = localStorage.getItem('belrose_site_banner') || localStorage.getItem('belrose_site_logo');
+            if (cachedBanner && bannerImg) {
+                bannerImg.src = cachedBanner;
+            }
+            const cachedName = localStorage.getItem('belrose_store_name');
+            if (cachedName) {
+                if (shopTitle) shopTitle.textContent = cachedName;
+                document.title = cachedName + " - Boutique en Ligne";
+            }
+            const cachedPrimary = localStorage.getItem('belrose_primary_color');
+            const cachedSecondary = localStorage.getItem('belrose_secondary_color');
+            if (cachedPrimary) {
+                applyThemeColors(cachedPrimary, cachedSecondary);
+            }
+            const cachedCats = localStorage.getItem('belrose_active_categories');
+            if (cachedCats) {
+                try {
+                    activeCategoryKeys = JSON.parse(cachedCats);
+                    renderCategoryTabs();
+                } catch(e) {}
+            }
+
+            // 2. Récupération des paramètres officiels depuis le serveur
+            try {
+                const res = await fetch('/api/settings');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.settings) {
+                        const { bannerUrl, storeName, primaryColor, secondaryColor, activeCategories } = data.settings;
+                        if (bannerUrl && bannerImg) {
+                            bannerImg.src = bannerUrl;
+                            localStorage.setItem('belrose_site_banner', bannerUrl);
+                        }
+                        if (storeName) {
+                            if (shopTitle) shopTitle.textContent = storeName;
+                            document.title = storeName + " - Boutique en Ligne";
+                            localStorage.setItem('belrose_store_name', storeName);
+                        }
+                        if (primaryColor) {
+                            applyThemeColors(primaryColor, secondaryColor);
+                            localStorage.setItem('belrose_primary_color', primaryColor);
+                            if (secondaryColor) localStorage.setItem('belrose_secondary_color', secondaryColor);
+                        }
+                        if (Array.isArray(activeCategories)) {
+                            activeCategoryKeys = activeCategories;
+                            localStorage.setItem('belrose_active_categories', JSON.stringify(activeCategories));
+                            renderCategoryTabs();
+                        }
+                    }
+                }
+            } catch (err) {
+                console.warn('Impossible de charger les paramètres distants :', err);
+            }
+        }
+
+        // Écouter les modifications en direct si l'admin change le nom, la photo, les couleurs ou les catégories
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'belrose_site_banner' || e.key === 'belrose_site_logo') {
+                const bannerImg = document.getElementById('shop-banner-img');
+                if (bannerImg && e.newValue) {
+                    bannerImg.src = e.newValue;
+                }
+            }
+            if (e.key === 'belrose_store_name') {
+                const shopTitle = document.getElementById('shop-title');
+                if (shopTitle && e.newValue) {
+                    shopTitle.textContent = e.newValue;
+                    document.title = e.newValue + " - Boutique en Ligne";
+                }
+            }
+            if (e.key === 'belrose_primary_color' || e.key === 'belrose_secondary_color') {
+                const p = localStorage.getItem('belrose_primary_color');
+                const s = localStorage.getItem('belrose_secondary_color');
+                applyThemeColors(p, s);
+            }
+            if (e.key === 'belrose_active_categories') {
+                try {
+                    activeCategoryKeys = JSON.parse(e.newValue);
+                    renderCategoryTabs();
+                } catch(err) {}
+            }
+        });
+
+        fetchSiteSettings();
     </script>
 </body>
 

@@ -1,14 +1,13 @@
 // api/products/index.js
 // -----------------------------------------------------------------------------
 // GET /api/products : Récupérer le catalogue et les stocks
-// POST /api/products : Ajouter ou mettre à jour un produit
+// POST /api/products : Ajouter, modifier un produit, ou enregistrer les stocks
 // DELETE /api/products?id=xxx : Supprimer un produit
 // -----------------------------------------------------------------------------
 
 const { supabase } = require('../../models/db');
-const { verifyAdminSession } = require('../../lib/auth');
+const { verifyAdminRequest } = require('../../lib/auth');
 
-// Catalogue par défaut avec stock
 const DEFAULT_PRODUCTS = [
   { id: 'c1', category: 'caps', name: 'CASQUETTE NOIR', desc: 'Casquette élégante brodée avec filet de ventilation', price: 15000, stock: 12, alertThreshold: 3, img: 'assets/casquette (1).png' },
   { id: 'c2', category: 'caps', name: 'CASQUETTE HERMÈS STYLE', desc: 'Finition haute qualité édition spéciale', price: 18000, stock: 4, alertThreshold: 3, img: 'assets/casquette (2).png' },
@@ -21,75 +20,99 @@ const DEFAULT_PRODUCTS = [
   { id: 'p2', category: 'parfums', name: 'Parfum Belrose Collection', desc: 'Senteur raffinée pour les occasions spéciales', price: 40000, stock: 10, alertThreshold: 3, img: 'assets/parfuns.png' }
 ];
 
-// Cache mémoire serveur
-let memoryProducts = [...DEFAULT_PRODUCTS];
-
 module.exports = async function handler(req, res) {
   const { method } = req;
 
   // GET : Public - Consultation des produits
   if (method === 'GET') {
     try {
-      if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY) {
-        const { data, error } = await supabase
-          .from('products')
-          .select('*')
-          .order('created_at', { ascending: true });
-        
-        if (!error && data && data.length > 0) {
-          return res.status(200).json({ success: true, products: data });
-        }
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .order('created_at', { ascending: true });
+
+      if (!error && data && data.length > 0) {
+        return res.status(200).json({ success: true, products: data });
       }
-      return res.status(200).json({ success: true, products: memoryProducts });
+      return res.status(200).json({ success: true, products: DEFAULT_PRODUCTS });
     } catch (err) {
-      return res.status(200).json({ success: true, products: memoryProducts });
+      console.warn('[api/products] Erreur GET :', err.message);
+      return res.status(200).json({ success: true, products: DEFAULT_PRODUCTS });
     }
   }
 
-  // POST / PUT / DELETE requièrent l'authentification admin
-  const session = verifyAdminSession(req);
-  if (!session) {
+  // POST / DELETE requièrent l'authentification admin
+  const admin = verifyAdminRequest(req);
+  if (!admin) {
     return res.status(401).json({ error: 'Non authentifié. Veuillez vous connecter.' });
   }
 
   if (method === 'POST') {
     try {
-      const product = req.body;
-      if (!product.name || !product.price) {
-        return res.status(400).json({ error: 'Nom et prix obligatoires.' });
+      const body = req.body || {};
+
+      // Cas 1 : Sauvegarde en lot (tableau de produits)
+      if (Array.isArray(body.products)) {
+        await supabase.from('products').upsert(body.products);
+        const { data: updatedList } = await supabase.from('products').select('*');
+        return res.status(200).json({
+          success: true,
+          message: `${body.products.length} produits enregistrés avec succès.`,
+          products: updatedList
+        });
       }
 
-      const id = product.id || 'prod_' + Date.now();
+      // Cas 2 : Modification rapide du stock uniquement { id, stock }
+      if (body.id && body.stock !== undefined && !body.name) {
+        const { data: existingList } = await supabase.from('products').select('*');
+        const existing = (existingList || []).find(p => String(p.id) === String(body.id));
+        if (existing) {
+          const updatedProduct = {
+            ...existing,
+            stock: Math.max(0, parseInt(body.stock, 10) || 0),
+            updated_at: new Date().toISOString()
+          };
+          await supabase.from('products').upsert(updatedProduct);
+          const { data: allProds } = await supabase.from('products').select('*');
+          return res.status(200).json({
+            success: true,
+            message: `Stock de ${existing.name} mis à jour (${updatedProduct.stock}).`,
+            product: updatedProduct,
+            products: allProds
+          });
+        }
+      }
+
+      // Cas 3 : Ajout ou modification complète d'un produit
+      if (!body.name || body.price === undefined) {
+        return res.status(400).json({ error: 'Le nom et le prix du produit sont obligatoires.' });
+      }
+
+      const id = body.id || ('prod_' + Date.now());
       const newProduct = {
-        id,
-        category: product.category || 'caps',
-        name: String(product.name).trim(),
-        desc: String(product.desc || '').trim(),
-        price: Number(product.price) || 0,
-        stock: Number(product.stock) >= 0 ? Number(product.stock) : 0,
-        alertThreshold: Number(product.alertThreshold) || 3,
-        img: product.img || 'assets/casquette (1).png',
+        id: String(id),
+        category: body.category || 'caps',
+        name: String(body.name).trim(),
+        desc: String(body.desc || '').trim(),
+        price: Number(body.price) || 0,
+        stock: Number(body.stock) >= 0 ? Number(body.stock) : 0,
+        alertThreshold: Number(body.alertThreshold) >= 0 ? Number(body.alertThreshold) : 3,
+        img: body.img || 'assets/casquette (1).png',
         updated_at: new Date().toISOString()
       };
 
-      if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY) {
-        await supabase
-          .from('products')
-          .upsert(newProduct, { onConflict: 'id' });
-      }
+      await supabase.from('products').upsert(newProduct);
+      const { data: allProds } = await supabase.from('products').select('*');
 
-      // Mise à jour cache mémoire
-      const idx = memoryProducts.findIndex(p => p.id === id);
-      if (idx >= 0) {
-        memoryProducts[idx] = { ...memoryProducts[idx], ...newProduct };
-      } else {
-        memoryProducts.push(newProduct);
-      }
-
-      return res.status(200).json({ success: true, product: newProduct, products: memoryProducts });
+      return res.status(200).json({
+        success: true,
+        message: `Produit "${newProduct.name}" enregistré avec succès !`,
+        product: newProduct,
+        products: allProds
+      });
     } catch (err) {
       console.error('[products-post] Erreur :', err);
-      return res.status(500).json({ error: 'Erreur lors de l\'enregistrement du produit.' });
+      return res.status(500).json({ error: "Erreur lors de l'enregistrement : " + err.message });
     }
   }
 
@@ -100,15 +123,18 @@ module.exports = async function handler(req, res) {
         return res.status(400).json({ error: 'Identifiant du produit requis.' });
       }
 
-      if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY) {
-        await supabase.from('products').delete().eq('id', id);
-      }
+      await supabase.from('products').delete().eq('id', id);
+      const { data: allProds } = await supabase.from('products').select('*');
 
-      memoryProducts = memoryProducts.filter(p => p.id !== id);
-      return res.status(200).json({ success: true, id, products: memoryProducts });
+      return res.status(200).json({
+        success: true,
+        message: 'Produit supprimé avec succès.',
+        id,
+        products: allProds
+      });
     } catch (err) {
       console.error('[products-delete] Erreur :', err);
-      return res.status(500).json({ error: 'Erreur lors de la suppression.' });
+      return res.status(500).json({ error: 'Erreur lors de la suppression : ' + err.message });
     }
   }
 
